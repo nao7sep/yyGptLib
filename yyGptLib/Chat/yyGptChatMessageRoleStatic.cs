@@ -21,7 +21,7 @@ namespace yyGptLib
             else if ("assistant".Equals (value, StringComparison.OrdinalIgnoreCase))
                 return Assistant;
 
-            else throw new yyArgumentException ($"@{nameof (value)} is invalid: \"{value}\"");
+            else throw new yyArgumentException ($"'{nameof (value)}' is invalid: \"{value}\"");
         }
     }
 }

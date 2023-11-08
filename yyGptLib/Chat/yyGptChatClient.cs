@@ -35,7 +35,7 @@ namespace yyGptLib
             CancellationToken? cancellationTokenForSendAsync = null, CancellationToken? cancellationTokenForReadAsStreamAsync = null)
         {
             if (HttpClient == null)
-                throw new yyObjectDisposedException ($"@{nameof (HttpClient)} is disposed.");
+                throw new yyObjectDisposedException ($"'{nameof (HttpClient)}' is disposed.");
 
             var xJson = JsonSerializer.Serialize (request, JsonSerializerOptions);
 
@@ -59,7 +59,7 @@ namespace yyGptLib
         public async Task <string?> ReadToEndAsync (CancellationToken? cancellationToken = null)
         {
             if (ResponseStreamReader == null)
-                throw new yyObjectDisposedException ($"@{nameof (ResponseStreamReader)} is disposed.");
+                throw new yyObjectDisposedException ($"'{nameof (ResponseStreamReader)}' is disposed.");
 
             if (ResponseStreamReader.EndOfStream)
                 return await Task.FromResult <string?> (null);
@@ -70,7 +70,7 @@ namespace yyGptLib
         public async ValueTask <string?> ReadLineAsync (CancellationToken? cancellationToken = null)
         {
             if (ResponseStreamReader == null)
-                throw new yyObjectDisposedException ($"@{nameof (ResponseStreamReader)} is disposed.");
+                throw new yyObjectDisposedException ($"'{nameof (ResponseStreamReader)}' is disposed.");
 
             if (ResponseStreamReader.EndOfStream)
                 return await ValueTask.FromResult <string?> (null);

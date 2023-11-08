@@ -17,9 +17,11 @@ namespace yyGptLib
         public yyGptChatResponseModel Parse (string? str)
         {
             if (string.IsNullOrWhiteSpace (str))
-                throw new yyArgumentException ($"@{nameof (str)} is invalid.");
+                throw new yyArgumentException ($"'{nameof (str)}' is invalid.");
 
-            var xResponse = (yyGptChatResponseModel?) JsonSerializer.Deserialize (str, typeof (yyGptChatResponseModel), JsonSerializerOptions) ??
+            var xResponse = (yyGptChatResponseModel?) JsonSerializer.Deserialize (str, typeof (yyGptChatResponseModel), JsonSerializerOptions);
+
+            if (xResponse == null)
                 throw new yyFormatException ("Failed to deserialize JSON.");
 
             return xResponse;
@@ -28,11 +30,13 @@ namespace yyGptLib
         public yyGptChatResponseModel ParseChunk (string? str)
         {
             if (string.IsNullOrWhiteSpace (str))
-                throw new yyArgumentException ($"@{nameof (str)} is invalid.");
+                throw new yyArgumentException ($"'{nameof (str)}' is invalid.");
 
             if (str.StartsWith ("data: {", StringComparison.OrdinalIgnoreCase))
             {
-                var xResponse = (yyGptChatResponseModel?) JsonSerializer.Deserialize (str.AsSpan ("data: ".Length), typeof (yyGptChatResponseModel), JsonSerializerOptions) ??
+                var xResponse = (yyGptChatResponseModel?) JsonSerializer.Deserialize (str.AsSpan ("data: ".Length), typeof (yyGptChatResponseModel), JsonSerializerOptions);
+
+                if (xResponse == null)
                     throw new yyFormatException ("Failed to deserialize JSON.");
 
                 return xResponse;

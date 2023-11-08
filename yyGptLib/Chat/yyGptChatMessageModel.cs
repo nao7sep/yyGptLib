@@ -17,9 +17,6 @@ namespace yyGptLib
         [JsonPropertyName ("content")]
         public string? Content { get; set; }
 
-        /// <summary>
-        /// Optional. Name of the speaker.
-        /// </summary>
         [JsonPropertyName ("name")]
         public string? Name { get; set; }
     }
