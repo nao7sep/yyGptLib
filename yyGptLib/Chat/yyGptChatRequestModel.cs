@@ -5,10 +5,10 @@ namespace yyGptLib
     public class yyGptChatRequestModel
     {
         [JsonPropertyName ("model")]
-        public string Model { get; set; }
+        public string? Model { get; set; }
 
         [JsonPropertyName ("messages")]
-        public IList <yyGptChatMessageModel> Messages { get; private set; } = new List <yyGptChatMessageModel> ();
+        public IList <yyGptChatMessageModel>? Messages { get; set; }
 
         [JsonPropertyName ("frequency_penalty")]
         public double? FrequencyPenalty { get; set; }
@@ -23,7 +23,7 @@ namespace yyGptLib
         public double? PresencePenalty { get; set; }
 
         [JsonPropertyName ("stop")]
-        public IList <string> Stop { get; private set; } = new List <string> ();
+        public IList <string>? Stop { get; set; }
 
         [JsonPropertyName ("temperature")]
         public double? Temperature { get; set; }
@@ -37,6 +37,18 @@ namespace yyGptLib
         [JsonPropertyName ("user")]
         public string? User { get; set; }
 
-        public yyGptChatRequestModel (string? model = null) => Model = model ?? yyGptChatDefaultValues.Model;
+        public yyGptChatRequestModel () => Model = yyGptChatDefaultValues.Model;
+
+        public void AddMessage (yyGptChatMessageRole role, string content, string? name = null)
+        {
+            Messages ??= new List <yyGptChatMessageModel> ();
+
+            Messages.Add (new yyGptChatMessageModel
+            {
+                Role = role,
+                Content = content,
+                Name = name
+            });
+        }
     }
 }

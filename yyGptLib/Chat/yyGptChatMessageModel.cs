@@ -2,30 +2,25 @@
 
 namespace yyGptLib
 {
-    public class yyGptChatMessageModel
+    public partial class yyGptChatMessageModel
     {
-        /// <summary>
-        /// For serialization only. Use Role instead.
-        /// </summary>
         [JsonPropertyName ("role")]
-        public string RoleString => Role.Value;
+        public string? RoleString
+        {
+            get => Role?.ToString ();
+            set => Role = yyGptChatMessageRole.Parse (value);
+        }
 
         [JsonIgnore]
-        public yyGptChatRole Role { get; set; }
+        public yyGptChatMessageRole? Role { get; set; }
 
         [JsonPropertyName ("content")]
-        public string Content { get; set; }
+        public string? Content { get; set; }
 
         /// <summary>
         /// Optional. Name of the speaker.
         /// </summary>
         [JsonPropertyName ("name")]
         public string? Name { get; set; }
-
-        public yyGptChatMessageModel (yyGptChatRole role, string content)
-        {
-            Role = role;
-            Content = content;
-        }
     }
 }

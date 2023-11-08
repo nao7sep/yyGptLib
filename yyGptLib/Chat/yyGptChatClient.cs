@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,9 +10,9 @@ namespace yyGptLib
     {
         public yyGptChatConnectionInfo ConnectionInfo { get; private set; }
 
-        public HttpClient? HttpClient { get; private set; } = new HttpClient ();
+        public HttpClient? HttpClient { get; private set; }
 
-        public JsonSerializerOptions JsonSerializerOptions { get; private set; } = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+        public JsonSerializerOptions JsonSerializerOptions { get; private set; }
 
         public Stream? ResponseStream { get; private set; }
 
@@ -21,7 +21,14 @@ namespace yyGptLib
         public yyGptChatClient (yyGptChatConnectionInfo connectionInfo)
         {
             ConnectionInfo = connectionInfo;
+            HttpClient = new HttpClient ();
             HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue ("Bearer", ConnectionInfo.ApiKey);
+
+            JsonSerializerOptions = new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                PropertyNameCaseInsensitive = true
+            };
         }
 
         public async Task <(HttpResponseMessage, Stream)> SendAsync (yyGptChatRequestModel request,

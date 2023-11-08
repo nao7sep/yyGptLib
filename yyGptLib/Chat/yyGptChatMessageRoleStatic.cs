@@ -2,15 +2,15 @@
 
 namespace yyGptLib
 {
-    public partial class yyGptChatRole: IEquatable <yyGptChatRole>
+    public partial class yyGptChatMessageRole: IEquatable <yyGptChatMessageRole>
     {
-        public static yyGptChatRole System { get; } = new yyGptChatRole ("system");
+        public static yyGptChatMessageRole System { get; } = new yyGptChatMessageRole ("system");
 
-        public static yyGptChatRole User { get; } = new yyGptChatRole ("user");
+        public static yyGptChatMessageRole User { get; } = new yyGptChatMessageRole ("user");
 
-        public static yyGptChatRole Assistant { get; } = new yyGptChatRole ("assistant");
+        public static yyGptChatMessageRole Assistant { get; } = new yyGptChatMessageRole ("assistant");
 
-        public static yyGptChatRole Parse (string value)
+        public static yyGptChatMessageRole Parse (string? value)
         {
             if ("system".Equals (value, StringComparison.OrdinalIgnoreCase))
                 return System;
