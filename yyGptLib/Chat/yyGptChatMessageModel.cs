@@ -11,7 +11,7 @@ namespace yyGptLib
         public string RoleString => Role.Value;
 
         [JsonIgnore]
-        public yyGptChatMessageRole Role { get; set; }
+        public yyGptChatRole Role { get; set; }
 
         [JsonPropertyName ("content")]
         public string Content { get; set; }
@@ -22,7 +22,7 @@ namespace yyGptLib
         [JsonPropertyName ("name")]
         public string? Name { get; set; }
 
-        public yyGptChatMessageModel (yyGptChatMessageRole role, string content)
+        public yyGptChatMessageModel (yyGptChatRole role, string content)
         {
             Role = role;
             Content = content;
