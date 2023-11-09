@@ -44,11 +44,12 @@ namespace yyGptLib
             {
                 var xResponse = await HttpClient.SendAsync (xMessage, HttpCompletionOption.ResponseHeadersRead, cancellationTokenForSendAsync ?? CancellationToken.None);
 
-                xResponse.EnsureSuccessStatusCode ();
+                // Commented out to receive error messages.
+                // xResponse.EnsureSuccessStatusCode ();
 
                 ResponseStream?.Dispose ();
                 ResponseStream = await xResponse.Content.ReadAsStreamAsync (cancellationTokenForReadAsStreamAsync ?? CancellationToken.None);
-                
+
                 ResponseStreamReader?.Dispose ();
                 ResponseStreamReader = new StreamReader (ResponseStream);
 

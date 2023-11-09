@@ -10,8 +10,13 @@ namespace yyGptLib
         [JsonPropertyName ("messages")]
         public IList <yyGptChatMessageModel>? Messages { get; set; }
 
+        // Optional parameters are in alphabetical order.
+
         [JsonPropertyName ("frequency_penalty")]
         public double? FrequencyPenalty { get; set; }
+
+        [JsonPropertyName ("logit_bias")]
+        public IDictionary <int, double>? LogitBias { get; set; }
 
         [JsonPropertyName ("max_tokens")]
         public int? MaxTokens { get; set; }
@@ -22,17 +27,23 @@ namespace yyGptLib
         [JsonPropertyName ("presence_penalty")]
         public double? PresencePenalty { get; set; }
 
+        [JsonPropertyName ("response_format")]
+        public yyGptChatRequestResponseFormatModel? ResponseFormat { get; set; }
+
+        [JsonPropertyName ("seed")]
+        public int? Seed { get; set; }
+
         [JsonPropertyName ("stop")]
         public IList <string>? Stop { get; set; }
+
+        [JsonPropertyName ("stream")]
+        public bool? Stream { get; set; }
 
         [JsonPropertyName ("temperature")]
         public double? Temperature { get; set; }
 
         [JsonPropertyName ("top_p")]
         public double? TopP { get; set; }
-
-        [JsonPropertyName ("stream")]
-        public bool? Stream { get; set; }
 
         [JsonPropertyName ("user")]
         public string? User { get; set; }
