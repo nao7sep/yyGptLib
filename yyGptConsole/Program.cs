@@ -1,4 +1,6 @@
-﻿using System.Text;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using yyGptLib;
 using yyLib;
 
@@ -30,12 +32,34 @@ namespace yyGptConsole
 
                     xSendingTask1.Wait ();
 
-                    var xResponse1 = xParser.Parse (await xClient.ReadToEndAsync ());
+                    string? xJson = await xClient.ReadToEndAsync ();
+                    var xResponse1 = xParser.Parse (xJson);
 
-                    foreach (var xChoice in xResponse1.Choices!)
-                        Console.WriteLine (xChoice.Message!.Content);
+                    if (xSendingTask1.Result.HttpResponseMessage.IsSuccessStatusCode)
+                    {
+                        foreach (var xChoice in xResponse1.Choices!)
+                            Console.WriteLine (xChoice.Message!.Content);
 
-                    xRequest.AddMessage (yyGptChatMessageRole.Assistant, xResponse1.Choices [Random.Shared.Next (0, xResponse1.Choices.Count)].Message!.Content!);
+                        xRequest.AddMessage (yyGptChatMessageRole.Assistant, xResponse1.Choices [Random.Shared.Next (0, xResponse1.Choices.Count)].Message!.Content!);
+                    }
+
+                    else
+                    {
+                        // I havent found any official documentation on the error model.
+                        // A roundtrip is tried to make sure all the properties are covered.
+
+                        // I might also cover the moderation model, but I couldnt be evil enough to get one.
+                        // https://platform.openai.com/docs/api-reference/moderations/object
+                        // Maybe, the API's priority is to refuse to respond and apologize.
+
+                        Console.WriteLine (xJson);
+
+                        Console.WriteLine (JsonSerializer.Serialize (xResponse1, new JsonSerializerOptions
+                        {
+                            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                            WriteIndented = true
+                        }));
+                    }
                 }
 
                 catch (Exception xException)
@@ -53,32 +77,51 @@ namespace yyGptConsole
 
                     xSendingTask2.Wait ();
 
-                    yyAutoExpandingList <StringBuilder> xBuilders = new ();
-                    string? xLine;
-
-                    while ((xLine = await xClient.ReadLineAsync ()) != null)
+                    if (xSendingTask2.Result.HttpResponseMessage.IsSuccessStatusCode)
                     {
-                        if (string.IsNullOrWhiteSpace (xLine) == false)
+                        yyAutoExpandingList <StringBuilder> xBuilders = new ();
+                        string? xLine;
+
+                        while ((xLine = await xClient.ReadLineAsync ()) != null)
                         {
-                            var xResponse2 = xParser.ParseChunk (xLine);
-
-                            if (xResponse2 != yyGptChatResponseModel.Empty)
+                            if (string.IsNullOrWhiteSpace (xLine) == false)
                             {
-                                string? xContent = xResponse2.Choices! [0].Delta!.Content;
+                                var xResponse2 = xParser.ParseChunk (xLine);
 
-                                if (string.IsNullOrWhiteSpace (xContent) == false)
+                                if (xResponse2 != yyGptChatResponseModel.Empty)
                                 {
-                                    int xIndex = xResponse2.Choices [0].Index!.Value;
+                                    string? xContent = xResponse2.Choices! [0].Delta!.Content;
 
-                                    xBuilders [xIndex].Append (xContent);
-                                    Console.WriteLine (FormattableString.Invariant ($"[{xIndex}] {xContent}"));
+                                    if (string.IsNullOrWhiteSpace (xContent) == false)
+                                    {
+                                        int xIndex = xResponse2.Choices [0].Index!.Value;
+
+                                        xBuilders [xIndex].Append (xContent);
+                                        Console.WriteLine (FormattableString.Invariant ($"[{xIndex}] {xContent}"));
+                                    }
                                 }
                             }
                         }
+
+                        foreach (StringBuilder xBuilder in xBuilders)
+                            Console.WriteLine (xBuilder.ToString ());
                     }
 
-                    foreach (StringBuilder xBuilder in xBuilders)
-                        Console.WriteLine (xBuilder.ToString ());
+                    else
+                    {
+                        string? xJson = await xClient.ReadToEndAsync ();
+                        var xResponse2 = xParser.Parse (xJson);
+
+                        // Again, to make sure all the properties are covered.
+
+                        Console.WriteLine (xJson);
+
+                        Console.WriteLine (JsonSerializer.Serialize (xResponse2, new JsonSerializerOptions
+                        {
+                            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                            WriteIndented = true
+                        }));
+                    }
                 }
 
                 catch (Exception xException)

@@ -31,7 +31,7 @@ namespace yyGptLib
             };
         }
 
-        public async Task <(HttpResponseMessage, Stream)> SendAsync (yyGptChatRequestModel request,
+        public async Task <(HttpResponseMessage HttpResponseMessage, Stream Stream)> SendAsync (yyGptChatRequestModel request,
             CancellationToken? cancellationTokenForSendAsync = null, CancellationToken? cancellationTokenForReadAsStreamAsync = null)
         {
             if (HttpClient == null)

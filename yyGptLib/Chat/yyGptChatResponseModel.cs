@@ -24,5 +24,8 @@ namespace yyGptLib
 
         [JsonPropertyName ("usage")]
         public yyGptChatResponseUsageModel? Usage { get; set; }
+
+        [JsonPropertyName ("error")]
+        public yyGptChatErrorModel? Error { get; set; }
     }
 }
