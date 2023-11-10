@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 using yyGptLib;
 using yyLib;
 
-namespace yyGptConsole
+namespace yyGptLibConsole
 {
     internal class Program
     {

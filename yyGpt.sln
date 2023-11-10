@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yyGptLib", "yyGptLib\yyGptLib.csproj", "{1AB1A95B-CEFC-4138-A894-8FEB945B6AD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "yyGptLib", "yyGptLib\yyGptLib.csproj", "{1AB1A95B-CEFC-4138-A894-8FEB945B6AD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yyGptConsole", "yyGptConsole\yyGptConsole.csproj", "{62CF07EF-075C-4F4A-BC88-E7C1C1F7C6B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "yyGptLibConsole", "yyGptLibConsole\yyGptLibConsole.csproj", "{62CF07EF-075C-4F4A-BC88-E7C1C1F7C6B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
