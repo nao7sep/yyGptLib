@@ -13,7 +13,7 @@ namespace yyGptLibConsole
 #pragma warning restore IDE0060
         {
             yyUserSecretsModel xUserSecrets = new yyUserSecretsLoader ().Load ();
-            yyGptChatConnectionInfo xConnectionInfo = new (xUserSecrets.OpenAi!.ApiKey!);
+            var xConnectionInfo = new yyGptChatConnectionInfoModel { ApiKey = xUserSecrets.OpenAi!.ApiKey! };
 
             yyGptChatRequestModel xRequest = new ();
             xRequest.AddMessage (yyGptChatMessageRole.System, "You are a helpful assistant.");

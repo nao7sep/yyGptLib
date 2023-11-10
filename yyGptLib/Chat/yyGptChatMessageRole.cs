@@ -1,5 +1,7 @@
 ﻿namespace yyGptLib
 {
+    // Could be an enum, but I want to make sure the value is returned as a lowercase string.
+
     public partial class yyGptChatMessageRole: IEquatable <yyGptChatMessageRole>
     {
         public string Value { get; private set; }

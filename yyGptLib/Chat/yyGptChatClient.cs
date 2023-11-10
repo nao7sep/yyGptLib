@@ -8,7 +8,7 @@ namespace yyGptLib
 {
     public class yyGptChatClient: IDisposable
     {
-        public yyGptChatConnectionInfo ConnectionInfo { get; private set; }
+        public yyGptChatConnectionInfoModel ConnectionInfo { get; private set; }
 
         public HttpClient? HttpClient { get; private set; }
 
@@ -18,7 +18,7 @@ namespace yyGptLib
 
         public StreamReader? ResponseStreamReader { get; private set; }
 
-        public yyGptChatClient (yyGptChatConnectionInfo connectionInfo)
+        public yyGptChatClient (yyGptChatConnectionInfoModel connectionInfo)
         {
             ConnectionInfo = connectionInfo;
             HttpClient = new HttpClient ();
