@@ -74,7 +74,7 @@ namespace yyGptLibConsole
 
                 while (true)
                 {
-                    var xChunkReadingTask = xConversation.TryReadAndParseChunk ();
+                    var xChunkReadingTask = xConversation.TryReadAndParseChunkAsync ();
 
                     if (xChunkReadingTask.Result.IsSuccess)
                     {

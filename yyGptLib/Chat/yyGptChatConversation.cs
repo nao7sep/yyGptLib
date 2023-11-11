@@ -57,7 +57,7 @@
         /// <summary>
         /// Add one of the returned messages to the request to continue the conversation.
         /// </summary>
-        public async Task <(bool IsSuccess, int Index, string? PartialMessage, Exception? Exception)> TryReadAndParseChunk (CancellationToken? cancellationToken = null)
+        public async Task <(bool IsSuccess, int Index, string? PartialMessage, Exception? Exception)> TryReadAndParseChunkAsync (CancellationToken? cancellationToken = null)
         {
             try
             {
