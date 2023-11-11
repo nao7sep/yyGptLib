@@ -14,6 +14,8 @@ namespace yyGptLib
 
         public JsonSerializerOptions JsonSerializerOptions { get; private set; }
 
+        public HttpResponseMessage? ResponseMessage { get; private set; }
+
         public Stream? ResponseStream { get; private set; }
 
         public StreamReader? ResponseStreamReader { get; private set; }
@@ -46,6 +48,9 @@ namespace yyGptLib
 
                 // Commented out to receive error messages.
                 // xResponse.EnsureSuccessStatusCode ();
+
+                ResponseMessage?.Dispose ();
+                ResponseMessage = xResponse;
 
                 ResponseStream?.Dispose ();
                 ResponseStream = await xResponse.Content.ReadAsStreamAsync (cancellationTokenForReadAsStreamAsync ?? CancellationToken.None);
@@ -83,6 +88,9 @@ namespace yyGptLib
         {
             HttpClient?.Dispose ();
             HttpClient = null;
+
+            ResponseMessage?.Dispose ();
+            ResponseMessage = null;
 
             ResponseStream?.Dispose ();
             ResponseStream = null;

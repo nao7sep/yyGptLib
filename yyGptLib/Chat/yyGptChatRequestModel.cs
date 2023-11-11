@@ -61,5 +61,19 @@ namespace yyGptLib
                 Name = name
             });
         }
+
+        public string? GetLastMessage ()
+        {
+            if (Messages != null && Messages.Count > 0)
+                return Messages [Messages.Count - 1].Content;
+
+            return null;
+        }
+
+        public void RemoveLastMessage ()
+        {
+            if (Messages != null && Messages.Count > 0)
+                Messages.RemoveAt (Messages.Count - 1);
+        }
     }
 }
