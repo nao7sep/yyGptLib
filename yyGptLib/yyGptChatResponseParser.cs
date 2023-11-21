@@ -1,43 +1,37 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
 using yyLib;
 
 namespace yyGptLib
 {
-    public class yyGptChatResponseParser
+    public static class yyGptChatResponseParser
     {
-        public JsonSerializerOptions JsonSerializerOptions { get; private set; }
-
-        public yyGptChatResponseParser () => JsonSerializerOptions = new JsonSerializerOptions
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNameCaseInsensitive = true
-        };
-
-        public yyGptChatResponseModel Parse (string? str)
+        public static yyGptChatResponseModel Parse (string? str)
         {
             if (string.IsNullOrWhiteSpace (str))
-                throw new yyArgumentException ($"'{nameof (str)}' is invalid.");
+                throw new yyArgumentException (yyMessage.Create ($"'{nameof (str)}' is invalid: {str.GetVisibleString ()}"));
 
-            var xResponse = (yyGptChatResponseModel?) JsonSerializer.Deserialize (str, typeof (yyGptChatResponseModel), JsonSerializerOptions);
+            var xResponse = (yyGptChatResponseModel?) JsonSerializer.Deserialize (str, typeof (yyGptChatResponseModel), yyJson.DefaultDeserializationOptions);
 
             if (xResponse == null)
-                throw new yyFormatException ("Failed to deserialize JSON.");
+                throw new yyFormatException (yyMessage.Create ($"Failed to deserialize JSON: {str.GetVisibleString ()}"));
 
             return xResponse;
         }
 
-        public yyGptChatResponseModel ParseChunk (string? str)
+        public static yyGptChatResponseModel ParseChunk (string? str)
         {
             if (string.IsNullOrWhiteSpace (str))
-                throw new yyArgumentException ($"'{nameof (str)}' is invalid.");
+                throw new yyArgumentException (yyMessage.Create ($"'{nameof (str)}' is invalid: {str.GetVisibleString ()}"));
 
             if (str.StartsWith ("data: {", StringComparison.OrdinalIgnoreCase))
             {
-                var xResponse = (yyGptChatResponseModel?) JsonSerializer.Deserialize (str.AsSpan ("data: ".Length), typeof (yyGptChatResponseModel), JsonSerializerOptions);
+                string xJson = str.Substring ("data: ".Length);
+
+                var xResponse = (yyGptChatResponseModel?) JsonSerializer.Deserialize (xJson,
+                    typeof (yyGptChatResponseModel), yyJson.DefaultDeserializationOptions);
 
                 if (xResponse == null)
-                    throw new yyFormatException ("Failed to deserialize JSON.");
+                    throw new yyFormatException (yyMessage.Create ($"Failed to deserialize JSON: {xJson.GetVisibleString ()}"));
 
                 return xResponse;
             }
@@ -45,7 +39,7 @@ namespace yyGptLib
             if (str.Equals ("data: [DONE]", StringComparison.OrdinalIgnoreCase))
                 return yyGptChatResponseModel.Empty;
 
-            throw new yyFormatException ("Failed to parse chunk.");
+            throw new yyFormatException (yyMessage.Create ($"Failed to parse chunk: {str.GetVisibleString ()}"));
         }
     }
 }

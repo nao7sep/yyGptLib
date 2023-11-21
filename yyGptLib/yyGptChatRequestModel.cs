@@ -48,7 +48,7 @@ namespace yyGptLib
         [JsonPropertyName ("user")]
         public string? User { get; set; }
 
-        public yyGptChatRequestModel () => Model = yyGptChatDefaultValues.Model;
+        public yyGptChatRequestModel () => Model = yyGptChat.DefaultModel;
 
         public void AddMessage (yyGptChatMessageRole role, string content, string? name = null)
         {

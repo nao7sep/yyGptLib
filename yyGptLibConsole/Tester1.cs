@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text;
 using yyGptLib;
 using yyLib;
@@ -10,18 +9,15 @@ namespace yyGptLibConsole
     {
         public static void Test ()
         {
-            yyUserSecretsModel xUserSecrets = new yyUserSecretsLoader ().Load ();
-            var xConnectionInfo = new yyGptChatConnectionInfoModel { ApiKey = xUserSecrets.OpenAi!.ApiKey! };
+            var xConnectionInfo = new yyGptChatConnectionInfoModel { ApiKey = yyUserSecretsModel.Default.OpenAi!.ApiKey! };
 
             var xRequest = new yyGptChatRequestModel
             {
                 Model = "gpt-4",
                 N = 3
             };
-            
-            xRequest.AddMessage (yyGptChatMessageRole.System, "You are a helpful assistant.");
 
-            yyGptChatResponseParser xParser = new ();
+            xRequest.AddMessage (yyGptChatMessageRole.System, "You are a helpful assistant.");
 
             using (yyGptChatClient xClient = new (xConnectionInfo))
             {
@@ -41,7 +37,7 @@ namespace yyGptLibConsole
                     xReadingTask1.Wait ();
 
                     string? xJson = xReadingTask1.Result;
-                    var xResponse1 = xParser.Parse (xJson);
+                    var xResponse1 = yyGptChatResponseParser.Parse (xJson);
 
                     if (xSendingTask1.Result.HttpResponseMessage.IsSuccessStatusCode)
                     {
@@ -62,16 +58,13 @@ namespace yyGptLibConsole
 
                         Console.WriteLine (xJson);
 
-                        Console.WriteLine (JsonSerializer.Serialize (xResponse1, new JsonSerializerOptions
-                        {
-                            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                            WriteIndented = true
-                        }));
+                        Console.WriteLine (JsonSerializer.Serialize (xResponse1, yyJson.DefaultSerializationOptions));
                     }
                 }
 
                 catch (Exception xException)
                 {
+                    yySimpleLogger.Default.TryWriteException (xException);
                     Console.WriteLine (xException);
                 }
 
@@ -139,7 +132,7 @@ namespace yyGptLibConsole
                             if (string.IsNullOrWhiteSpace (xLine))
                                 continue; // Continues for "data: [DONE]".
 
-                            var xResponse2 = xParser.ParseChunk (xLine);
+                            var xResponse2 = yyGptChatResponseParser.ParseChunk (xLine);
 
                             if (xResponse2 == yyGptChatResponseModel.Empty)
                                 break; // "data: [DONE]" is detected.
@@ -166,22 +159,19 @@ namespace yyGptLibConsole
                         var xReadingTask2 = xClient.ReadToEndAsync ();
 
                         string? xJson = xReadingTask2.Result;
-                        var xResponse2 = xParser.Parse (xJson);
+                        var xResponse2 = yyGptChatResponseParser.Parse (xJson);
 
                         // Again, to make sure all the properties are covered.
 
                         Console.WriteLine (xJson);
 
-                        Console.WriteLine (JsonSerializer.Serialize (xResponse2, new JsonSerializerOptions
-                        {
-                            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                            WriteIndented = true
-                        }));
+                        Console.WriteLine (JsonSerializer.Serialize (xResponse2, yyJson.DefaultSerializationOptions));
                     }
                 }
 
                 catch (Exception xException)
                 {
+                    yySimpleLogger.Default.TryWriteException (xException);
                     Console.WriteLine (xException);
                 }
             }

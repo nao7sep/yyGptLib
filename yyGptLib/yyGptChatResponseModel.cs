@@ -2,20 +2,22 @@
 
 namespace yyGptLib
 {
-    public partial class yyGptChatResponseModel
+    public class yyGptChatResponseModel
     {
+        public static yyGptChatResponseModel Empty { get; } = new yyGptChatResponseModel ();
+
         [JsonPropertyName ("id")]
         public string? Id { get; set; }
-        
+
         [JsonPropertyName ("object")]
         public string? Object { get; set; }
-        
+
         [JsonPropertyName ("created")]
         public int? Created { get; set; }
-        
+
         [JsonPropertyName ("model")]
         public string? Model { get; set; }
-        
+
         [JsonPropertyName ("system_fingerprint")]
         public string? SystemFingerprint { get; set; }
 

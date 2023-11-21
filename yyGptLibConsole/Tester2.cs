@@ -24,8 +24,7 @@ namespace yyGptLibConsole
                     }
                 });
 
-                yyUserSecretsModel xUserSecrets = new yyUserSecretsLoader ().Load ();
-                using yyGptChatConversation xConversation = new (new yyGptChatConnectionInfoModel { ApiKey = xUserSecrets.OpenAi!.ApiKey });
+                using yyGptChatConversation xConversation = new (new yyGptChatConnectionInfoModel { ApiKey = yyUserSecretsModel.Default.OpenAi!.ApiKey });
 
                 xConversation.Request.Model = "gpt-4";
                 xConversation.Request.N = 3;
@@ -110,6 +109,7 @@ namespace yyGptLibConsole
 
             catch (Exception xException)
             {
+                yySimpleLogger.Default.TryWriteException (xException);
                 Console.WriteLine (xException);
             }
         }

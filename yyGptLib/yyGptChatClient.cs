@@ -12,8 +12,6 @@ namespace yyGptLib
 
         public HttpClient? HttpClient { get; private set; }
 
-        public JsonSerializerOptions JsonSerializerOptions { get; private set; }
-
         public HttpResponseMessage? ResponseMessage { get; private set; }
 
         public Stream? ResponseStream { get; private set; }
@@ -25,21 +23,15 @@ namespace yyGptLib
             ConnectionInfo = connectionInfo;
             HttpClient = new HttpClient ();
             HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue ("Bearer", ConnectionInfo.ApiKey);
-
-            JsonSerializerOptions = new JsonSerializerOptions
-            {
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                PropertyNameCaseInsensitive = true
-            };
         }
 
         public async Task <(HttpResponseMessage HttpResponseMessage, Stream Stream)> SendAsync (yyGptChatRequestModel request,
             CancellationToken? cancellationTokenForSendAsync = null, CancellationToken? cancellationTokenForReadAsStreamAsync = null)
         {
             if (HttpClient == null)
-                throw new yyObjectDisposedException ($"'{nameof (HttpClient)}' is disposed.");
+                throw new yyObjectDisposedException (yyMessage.Create ($"'{nameof (HttpClient)}' is disposed."));
 
-            var xJson = JsonSerializer.Serialize (request, JsonSerializerOptions);
+            var xJson = JsonSerializer.Serialize (request, yyJson.DefaultSerializationOptions);
 
             using (var xContent = new StringContent (xJson, Encoding.UTF8, "application/json"))
             using (var xMessage = new HttpRequestMessage (HttpMethod.Post, ConnectionInfo.Endpoint) { Content = xContent })
@@ -65,7 +57,7 @@ namespace yyGptLib
         public async Task <string?> ReadToEndAsync (CancellationToken? cancellationToken = null)
         {
             if (ResponseStreamReader == null)
-                throw new yyObjectDisposedException ($"'{nameof (ResponseStreamReader)}' is disposed.");
+                throw new yyObjectDisposedException (yyMessage.Create ($"'{nameof (ResponseStreamReader)}' is disposed."));
 
             if (ResponseStreamReader.EndOfStream)
                 return await Task.FromResult <string?> (null);
@@ -76,7 +68,7 @@ namespace yyGptLib
         public async ValueTask <string?> ReadLineAsync (CancellationToken? cancellationToken = null)
         {
             if (ResponseStreamReader == null)
-                throw new yyObjectDisposedException ($"'{nameof (ResponseStreamReader)}' is disposed.");
+                throw new yyObjectDisposedException (yyMessage.Create ($"'{nameof (ResponseStreamReader)}' is disposed."));
 
             if (ResponseStreamReader.EndOfStream)
                 return await ValueTask.FromResult <string?> (null);

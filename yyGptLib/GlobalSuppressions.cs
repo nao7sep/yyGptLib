@@ -6,6 +6,9 @@ using System.Diagnostics.CodeAnalysis;
 // Use conditional expression for return
 [assembly: SuppressMessage ("Style", "IDE0046")]
 
+// Use range operator
+[assembly: SuppressMessage ("Style", "IDE0057")]
+
 // Use simple 'using' statement
 [assembly: SuppressMessage ("Style", "IDE0063")]
 

@@ -2,7 +2,7 @@
 
 namespace yyGptLib
 {
-    public partial class yyGptChatMessageModel
+    public class yyGptChatMessageModel
     {
         [JsonPropertyName ("role")]
         public string? RoleString

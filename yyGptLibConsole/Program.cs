@@ -1,3 +1,5 @@
+using yyLib;
+
 namespace yyGptLibConsole
 {
     internal class Program
@@ -6,8 +8,17 @@ namespace yyGptLibConsole
         static void Main (string [] args)
 #pragma warning restore IDE0060
         {
-            Tester1.Test ();
-            Tester2.Test ();
+            try
+            {
+                Tester1.Test ();
+                Tester2.Test ();
+            }
+
+            catch (Exception xException)
+            {
+                yySimpleLogger.Default.TryWriteException (xException);
+                Console.WriteLine (xException);
+            }
         }
     }
 }

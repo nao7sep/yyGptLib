@@ -1,4 +1,6 @@
-﻿namespace yyGptLib
+﻿using yyLib;
+
+namespace yyGptLib
 {
     public class yyGptChatConversation: IDisposable
     {
@@ -6,13 +8,10 @@
 
         public yyGptChatRequestModel Request { get; private set; }
 
-        public yyGptChatResponseParser ResponseParser { get; private set; }
-
         public yyGptChatConversation (yyGptChatConnectionInfoModel connectionInfo)
         {
             Client = new yyGptChatClient (connectionInfo);
             Request = new yyGptChatRequestModel ();
-            ResponseParser = new yyGptChatResponseParser ();
         }
 
         public async Task SendAsync (CancellationToken? cancellationTokenForSendAsync = null, CancellationToken? cancellationTokenForReadAsStreamAsync = null) =>
@@ -32,7 +31,7 @@
             try
             {
                 string? xJson = await Client.ReadToEndAsync (cancellationToken);
-                var xResponse = ResponseParser.Parse (xJson);
+                var xResponse = yyGptChatResponseParser.Parse (xJson);
 
                 if (Client.ResponseMessage!.IsSuccessStatusCode)
                     return (true, xResponse.Choices!.Select (x => x.Message!.Content!).ToList (), null);
@@ -42,6 +41,7 @@
 
             catch (Exception xException)
             {
+                yySimpleLogger.Default.TryWriteException (xException);
                 return (false, new List <string> (), xException);
             }
         }
@@ -79,7 +79,7 @@
                     if (string.IsNullOrWhiteSpace (xLine))
                         return (true, default, string.Empty, null);
 
-                    var xResponse = ResponseParser.ParseChunk (xLine);
+                    var xResponse = yyGptChatResponseParser.ParseChunk (xLine);
 
                     if (xResponse == yyGptChatResponseModel.Empty)
                         return (true, default, null, null); // "data: [DONE]" is detected.
@@ -93,7 +93,7 @@
                 else
                 {
                     string? xJson = await Client.ReadToEndAsync (cancellationToken);
-                    var xResponse = ResponseParser.Parse (xJson);
+                    var xResponse = yyGptChatResponseParser.Parse (xJson);
 
                     return (false, default, xResponse.Error!.Message, null);
                 }
@@ -101,6 +101,7 @@
 
             catch (Exception xException)
             {
+                yySimpleLogger.Default.TryWriteException (xException);
                 return (false, default, null, xException);
             }
         }
