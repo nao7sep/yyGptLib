@@ -4,7 +4,7 @@ namespace yyGptLib
 {
     // Could be an enum, but I want to make sure the value is returned as a lowercase string.
 
-    public class yyGptChatMessageRole: IEquatable <yyGptChatMessageRole>
+    public class yyGptChatMessageRole (string value): IEquatable <yyGptChatMessageRole>
     {
         public static yyGptChatMessageRole System { get; } = new yyGptChatMessageRole ("system");
 
@@ -26,9 +26,7 @@ namespace yyGptLib
             else throw new yyArgumentException (yyMessage.Create ($"'{nameof (value)}' is invalid: {value.GetVisibleString ()}"));
         }
 
-        public string Value { get; private set; }
-
-        public yyGptChatMessageRole (string value) => Value = value;
+        public string Value { get; private set; } = value;
 
         public bool Equals (yyGptChatMessageRole? role) => Value.Equals (role?.Value, StringComparison.OrdinalIgnoreCase);
 

@@ -47,15 +47,17 @@ namespace yyGptLibConsole
                 if (xReadingTask.Result.IsSuccess)
                 {
                     foreach (string xMessage in xReadingTask.Result.Messages)
-                        Console.WriteLine ($"Message: {xMessage}");
+                        Console.WriteLine ($"Message: {xMessage.GetVisibleString ()}");
 
                     xConversation.Request.AddMessage (yyGptChatMessageRole.Assistant, xReadingTask.Result.Messages [Random.Shared.Next (0, xReadingTask.Result.Messages.Count)]);
                 }
 
                 else
                 {
+                    Console.WriteLine ($"RawContent: {xReadingTask.Result.RawContent.GetVisibleString ()}");
+
                     if (xReadingTask.Result.Messages.Count > 0)
-                        Console.WriteLine ($"Error Message: {xReadingTask.Result.Messages [0]}");
+                        Console.WriteLine ($"Error Message: {xReadingTask.Result.Messages [0].GetVisibleString ()}");
 
                     else Console.WriteLine ($"Exception: {xReadingTask.Result.Exception}");
                 }
@@ -69,7 +71,7 @@ namespace yyGptLibConsole
 
                 xSendingTask.ContinueWith (x => Console.WriteLine ("Sent.")).Wait ();
 
-                yyAutoExpandingList <StringBuilder> xBuilders = new ();
+                yyAutoExpandingList <StringBuilder> xBuilders = [];
 
                 while (true)
                 {
@@ -84,13 +86,15 @@ namespace yyGptLibConsole
                         string? xPartialMessage = xChunkReadingTask.Result.PartialMessage;
 
                         xBuilders [xIndex].Append (xPartialMessage);
-                        Console.WriteLine (FormattableString.Invariant ($"Read Chunk: [{xIndex}] {xPartialMessage}"));
+                        Console.WriteLine (FormattableString.Invariant ($"Read Chunk: [{xIndex}] {xPartialMessage.GetVisibleString ()}"));
                     }
 
                     else
                     {
+                        Console.WriteLine ($"RawContent: {xChunkReadingTask.Result.RawContent.GetVisibleString ()}");
+
                         if (xChunkReadingTask.Result.PartialMessage != null)
-                            Console.WriteLine ($"Error Message: {xChunkReadingTask.Result.PartialMessage}");
+                            Console.WriteLine ($"Error Message: {xChunkReadingTask.Result.PartialMessage.GetVisibleString ()}");
 
                         else Console.WriteLine ($"Exception: {xChunkReadingTask.Result.Exception}");
 
@@ -99,7 +103,7 @@ namespace yyGptLibConsole
                 }
 
                 foreach (StringBuilder xBuilder in xBuilders)
-                    Console.WriteLine ($"Message: {xBuilder}");
+                    Console.WriteLine ($"Message: {xBuilder.ToString ().GetVisibleString ()}");
 
                 // -----------------------------------------------------------------------------
 

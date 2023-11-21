@@ -42,7 +42,7 @@ namespace yyGptLibConsole
                     if (xSendingTask1.Result.HttpResponseMessage.IsSuccessStatusCode)
                     {
                         foreach (var xChoice in xResponse1.Choices!)
-                            Console.WriteLine ($"Message: {xChoice.Message!.Content}");
+                            Console.WriteLine ($"Message: {xChoice.Message!.Content.GetVisibleString ()}");
 
                         xRequest.AddMessage (yyGptChatMessageRole.Assistant, xResponse1.Choices [Random.Shared.Next (0, xResponse1.Choices.Count)].Message!.Content!);
                     }
@@ -56,7 +56,7 @@ namespace yyGptLibConsole
                         // https://platform.openai.com/docs/api-reference/moderations/object
                         // Maybe, the API's priority is to refuse to respond and apologize.
 
-                        Console.WriteLine (xJson);
+                        Console.WriteLine (xJson.GetVisibleString ());
 
                         Console.WriteLine (JsonSerializer.Serialize (xResponse1, yyJson.DefaultSerializationOptions));
                     }
@@ -80,7 +80,7 @@ namespace yyGptLibConsole
 
                     if (xSendingTask2.Result.HttpResponseMessage.IsSuccessStatusCode)
                     {
-                        yyAutoExpandingList <StringBuilder> xBuilders = new ();
+                        yyAutoExpandingList <StringBuilder> xBuilders = [];
 
                         while (true)
                         {
@@ -147,11 +147,11 @@ namespace yyGptLibConsole
                             int xIndex = xResponse2.Choices [0].Index!.Value;
 
                             xBuilders [xIndex].Append (xContent);
-                            Console.WriteLine (FormattableString.Invariant ($"Read Chunk: [{xIndex}] {xContent}"));
+                            Console.WriteLine (FormattableString.Invariant ($"Read Chunk: [{xIndex}] {xContent.GetVisibleString ()}"));
                         }
 
                         foreach (StringBuilder xBuilder in xBuilders)
-                            Console.WriteLine ($"Message: {xBuilder}");
+                            Console.WriteLine ($"Message: {xBuilder.ToString ().GetVisibleString ()}");
                     }
 
                     else
@@ -163,7 +163,7 @@ namespace yyGptLibConsole
 
                         // Again, to make sure all the properties are covered.
 
-                        Console.WriteLine (xJson);
+                        Console.WriteLine (xJson.GetVisibleString ());
 
                         Console.WriteLine (JsonSerializer.Serialize (xResponse2, yyJson.DefaultSerializationOptions));
                     }

@@ -2,17 +2,11 @@
 
 namespace yyGptLib
 {
-    public class yyGptChatConversation: IDisposable
+    public class yyGptChatConversation (yyGptChatConnectionInfoModel connectionInfo): IDisposable
     {
-        public yyGptChatClient Client { get; private set; }
+        public yyGptChatClient Client { get; private set; } = new yyGptChatClient (connectionInfo);
 
-        public yyGptChatRequestModel Request { get; private set; }
-
-        public yyGptChatConversation (yyGptChatConnectionInfoModel connectionInfo)
-        {
-            Client = new yyGptChatClient (connectionInfo);
-            Request = new yyGptChatRequestModel ();
-        }
+        public yyGptChatRequestModel Request { get; private set; } = new yyGptChatRequestModel ();
 
         public async Task SendAsync (CancellationToken? cancellationTokenForSendAsync = null, CancellationToken? cancellationTokenForReadAsStreamAsync = null) =>
             await Client.SendAsync (Request, cancellationTokenForSendAsync, cancellationTokenForReadAsStreamAsync);
@@ -23,26 +17,30 @@ namespace yyGptLib
         // If IsSuccess is false, if an error message was retrieved, Messages should have only one element, which is the error message.
         // If IsSuccess is false and Messages is empty, an Exception instance should be available.
 
+        // Added RawContent to see what exactly is returned from the server.
+
         /// <summary>
         /// Add one of the returned messages to the request to continue the conversation.
         /// </summary>
-        public async Task <(bool IsSuccess, IList <string> Messages, Exception? Exception)> TryReadAndParseAsync (CancellationToken? cancellationToken = null)
+        public async Task <(bool IsSuccess, string? RawContent, IList <string> Messages, Exception? Exception)> TryReadAndParseAsync (CancellationToken? cancellationToken = null)
         {
+            string? xJson = null;
+
             try
             {
-                string? xJson = await Client.ReadToEndAsync (cancellationToken);
+                xJson = await Client.ReadToEndAsync (cancellationToken);
                 var xResponse = yyGptChatResponseParser.Parse (xJson);
 
                 if (Client.ResponseMessage!.IsSuccessStatusCode)
-                    return (true, xResponse.Choices!.Select (x => x.Message!.Content!).ToList (), null);
+                    return (true, xJson, xResponse.Choices!.Select (x => x.Message!.Content!).ToList (), null);
 
-                else return (false, new [] { xResponse.Error!.Message! }, null);
+                else return (false, xJson, new [] { xResponse.Error!.Message! }, null);
             }
 
             catch (Exception xException)
             {
                 yySimpleLogger.Default.TryWriteException (xException);
-                return (false, new List <string> (), xException);
+                return (false, xJson, new List <string> (), xException);
             }
         }
 
@@ -54,11 +52,16 @@ namespace yyGptLib
             // if PartialMessage isnt null, it should be an error message returned from the server.
             // if PartialMessage is null, an Exception instance should be available.
 
+        // Added RawContent.
+
         /// <summary>
         /// Add one of the returned messages to the request to continue the conversation.
         /// </summary>
-        public async Task <(bool IsSuccess, int Index, string? PartialMessage, Exception? Exception)> TryReadAndParseChunkAsync (CancellationToken? cancellationToken = null)
+        public async Task <(bool IsSuccess, string? RawContent, int Index, string? PartialMessage, Exception? Exception)> TryReadAndParseChunkAsync (CancellationToken? cancellationToken = null)
         {
+            string? xLine = null,
+                xJson = null;
+
             try
             {
                 // Feels a little redundant, but the cost is negligible.
@@ -67,42 +70,43 @@ namespace yyGptLib
 
                 if (Client.ResponseMessage!.IsSuccessStatusCode)
                 {
-                    string? xLine = await Client.ReadLineAsync (cancellationToken);
+                    xLine = await Client.ReadLineAsync (cancellationToken);
 
                     if (xLine == null)
-                        return (true, default, null, null); // End of stream.
+                        return (true, xLine, default, null, null); // End of stream.
                         // We usually dont get here as "data: [DONE]" is detected before.
 
                     // If a returned line is empty and doesnt contain the "data: " part,
                     // we consider an empty partial message has been retrieved and continue for "data: [DONE]" or the end of stream.
 
                     if (string.IsNullOrWhiteSpace (xLine))
-                        return (true, default, string.Empty, null);
+                        return (true, xLine, default, string.Empty, null);
 
                     var xResponse = yyGptChatResponseParser.ParseChunk (xLine);
 
                     if (xResponse == yyGptChatResponseModel.Empty)
-                        return (true, default, null, null); // "data: [DONE]" is detected.
+                        return (true, xLine, default, null, null); // "data: [DONE]" is detected.
 
                     int xIndex = xResponse.Choices! [0].Index!.Value;
                     string? xContent = xResponse.Choices! [0].Delta!.Content;
 
-                    return (true, xIndex, xContent, null);
+                    return (true, xLine, xIndex, xContent, null);
                 }
 
                 else
                 {
-                    string? xJson = await Client.ReadToEndAsync (cancellationToken);
+                    xJson = await Client.ReadToEndAsync (cancellationToken);
                     var xResponse = yyGptChatResponseParser.Parse (xJson);
 
-                    return (false, default, xResponse.Error!.Message, null);
+                    return (false, xJson, default, xResponse.Error!.Message, null);
                 }
             }
 
             catch (Exception xException)
             {
                 yySimpleLogger.Default.TryWriteException (xException);
-                return (false, default, null, xException);
+                // Regardless of where the exception is thrown, this should work just fine.
+                return (false, xLine ?? xJson, default, null, xException);
             }
         }
 
