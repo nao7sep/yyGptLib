@@ -65,7 +65,7 @@ namespace yyGptLibConsole
                 catch (Exception xException)
                 {
                     yySimpleLogger.Default.TryWriteException (xException);
-                    Console.WriteLine (xException);
+                    Console.WriteLine (xException.ToString ());
                 }
 
                 try
@@ -172,7 +172,7 @@ namespace yyGptLibConsole
                 catch (Exception xException)
                 {
                     yySimpleLogger.Default.TryWriteException (xException);
-                    Console.WriteLine (xException);
+                    Console.WriteLine (xException.ToString ());
                 }
             }
         }

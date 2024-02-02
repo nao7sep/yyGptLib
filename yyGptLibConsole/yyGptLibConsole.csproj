@@ -23,7 +23,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\yyGptLib\yyGptLib.csproj" />
+      <ProjectReference Include="..\yyGptLib\yyGptLib.csproj" />
     </ItemGroup>
 
     <ItemGroup>

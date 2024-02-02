@@ -1,0 +1,17 @@
+﻿[Delete]
+Lib
+
+[Copy]
+yyGptLib/bin/Release/net8.0 > Lib
+
+[Delete]
+Lib/yyGptLib.pdb
+Lib/yyLib.pdb
+
+[Exclude]
+.git
+.vs
+yyGptLib/bin
+yyGptLib/obj
+yyGptLibConsole/bin
+yyGptLibConsole/obj
