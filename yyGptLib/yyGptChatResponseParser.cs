@@ -8,12 +8,12 @@ namespace yyGptLib
         public static yyGptChatResponseModel Parse (string? str)
         {
             if (string.IsNullOrWhiteSpace (str))
-                throw new yyArgumentException (yyMessage.Create ($"'{nameof (str)}' is invalid: {str.GetVisibleString ()}"));
+                throw new yyArgumentException ($"'{nameof (str)}' is invalid: {str.GetVisibleString ()}");
 
             var xResponse = (yyGptChatResponseModel?) JsonSerializer.Deserialize (str, typeof (yyGptChatResponseModel), yyJson.DefaultDeserializationOptions);
 
             if (xResponse == null)
-                throw new yyFormatException (yyMessage.Create ($"Failed to deserialize JSON: {str.GetVisibleString ()}"));
+                throw new yyFormatException ($"Failed to deserialize JSON: {str.GetVisibleString ()}");
 
             return xResponse;
         }
@@ -21,7 +21,7 @@ namespace yyGptLib
         public static yyGptChatResponseModel ParseChunk (string? str)
         {
             if (string.IsNullOrWhiteSpace (str))
-                throw new yyArgumentException (yyMessage.Create ($"'{nameof (str)}' is invalid: {str.GetVisibleString ()}"));
+                throw new yyArgumentException ($"'{nameof (str)}' is invalid: {str.GetVisibleString ()}");
 
             if (str.StartsWith ("data: {", StringComparison.OrdinalIgnoreCase))
             {
@@ -31,7 +31,7 @@ namespace yyGptLib
                     typeof (yyGptChatResponseModel), yyJson.DefaultDeserializationOptions);
 
                 if (xResponse == null)
-                    throw new yyFormatException (yyMessage.Create ($"Failed to deserialize JSON: {xJson.GetVisibleString ()}"));
+                    throw new yyFormatException ($"Failed to deserialize JSON: {xJson.GetVisibleString ()}");
 
                 return xResponse;
             }
@@ -39,7 +39,7 @@ namespace yyGptLib
             if (str.Equals ("data: [DONE]", StringComparison.OrdinalIgnoreCase))
                 return yyGptChatResponseModel.Empty;
 
-            throw new yyFormatException (yyMessage.Create ($"Failed to parse chunk: {str.GetVisibleString ()}"));
+            throw new yyFormatException ($"Failed to parse chunk: {str.GetVisibleString ()}");
         }
     }
 }

@@ -23,7 +23,7 @@ namespace yyGptLib
             else if ("assistant".Equals (value, StringComparison.OrdinalIgnoreCase))
                 return Assistant;
 
-            else throw new yyArgumentException (yyMessage.Create ($"'{nameof (value)}' is invalid: {value.GetVisibleString ()}"));
+            else throw new yyArgumentException ($"'{nameof (value)}' is invalid: {value.GetVisibleString ()}");
         }
 
         public string Value { get; private set; } = value;

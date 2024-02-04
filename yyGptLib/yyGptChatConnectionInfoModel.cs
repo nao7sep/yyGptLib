@@ -10,6 +10,10 @@ namespace yyGptLib
         [JsonPropertyName ("endpoint")]
         public string? Endpoint { get; set; }
 
-        public yyGptChatConnectionInfoModel () => Endpoint = yyGptChat.DefaultEndpoint;
+        public yyGptChatConnectionInfoModel ()
+        {
+            ApiKey = yyGpt.DefaultApiKey;
+            Endpoint = yyGptChat.DefaultEndpoint;
+        }
     }
 }
