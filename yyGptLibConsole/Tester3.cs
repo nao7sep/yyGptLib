@@ -10,17 +10,17 @@ namespace yyGptLibConsole
         {
             var xConnectionInfo = new yyGptImagesConnectionInfoModel { ApiKey = yyUserSecretsModel.Default.OpenAi!.ApiKey! };
 
-            for (int temp = 0; temp < 2; temp ++)
+            for (int temp = 0; temp < 10; temp ++) // If the AI is faster than usual, the rate limit might be reached.
             {
                 var xRequest = new yyGptImagesRequestModel
                 {
-                    Prompt = $"A beautiful woman in a {(temp == 0 ? "ancient" : "futuristic")} city where people ride camels to fly, please.",
+                    Prompt = $"A beautiful person in a beautiful place, please.", // Changed to a more general prompt to see the tendency of the results.
                     Model = "dall-e-3",
                     Quality = "hd",
                     Size = "1792x1024"
                 };
 
-                if (temp == 1)
+                if (temp % 2 != 0)
                 {
                     xRequest.ResponseFormat = "b64_json";
                     // xRequest.Style = "natural"; doesnt seem to produce good results.
@@ -49,7 +49,7 @@ namespace yyGptLibConsole
                         {
                             byte [] xBytes;
 
-                            if (temp == 0)
+                            if (temp % 2 == 0)
                             {
                                 using (HttpClient xHttpClient = new ())
                                 {
