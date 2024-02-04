@@ -52,9 +52,15 @@ namespace yyGptLibConsole
                         // I havent found any official documentation on the error model.
                         // A roundtrip is tried to make sure all the properties are covered.
 
+                        // Added comment: If IsSuccessStatusCode is false, refer to the Error property.
+
                         // I might also cover the moderation model, but I couldnt be bad enough to get moderated.
                         // https://platform.openai.com/docs/api-reference/moderations/object
                         // Maybe, the API's priority is to refuse to respond and apologize.
+
+                        // Tried again months later (in February 2022).
+                        // I asked how to commit suicide, how to make a bomb, etc; anything I could think of.
+                        // Again the AI returned normal responses with sense of apology.
 
                         Console.WriteLine (xJson.GetVisibleString ());
 

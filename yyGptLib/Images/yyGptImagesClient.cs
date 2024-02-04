@@ -1,13 +1,13 @@
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using yyLib;
 
 namespace yyGptLib
 {
-    public class yyGptChatClient: IDisposable
+    public class yyGptImagesClient: IDisposable
     {
-        public yyGptChatConnectionInfoModel ConnectionInfo { get; private set; }
+        public yyGptImagesConnectionInfoModel ConnectionInfo { get; private set; }
 
         public HttpClient? HttpClient { get; private set; }
 
@@ -17,14 +17,14 @@ namespace yyGptLib
 
         public StreamReader? ResponseStreamReader { get; private set; }
 
-        public yyGptChatClient (yyGptChatConnectionInfoModel connectionInfo)
+        public yyGptImagesClient (yyGptImagesConnectionInfoModel connectionInfo)
         {
             ConnectionInfo = connectionInfo;
             HttpClient = new HttpClient ();
             HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue ("Bearer", ConnectionInfo.ApiKey);
         }
 
-        public async Task <(HttpResponseMessage HttpResponseMessage, Stream Stream)> SendAsync (yyGptChatRequestModel request,
+        public async Task <(HttpResponseMessage HttpResponseMessage, Stream Stream)> SendAsync (yyGptImagesRequestModel request,
             CancellationToken? cancellationTokenForSendAsync = null, CancellationToken? cancellationTokenForReadAsStreamAsync = null)
         {
             if (HttpClient == null)
@@ -58,21 +58,15 @@ namespace yyGptLib
             if (ResponseStreamReader == null)
                 throw new yyObjectDisposedException ($"'{nameof (ResponseStreamReader)}' is disposed.");
 
+            // GitHub Copilot suggested the following code,
+            //     but I'm still going to use the well-tested piece from yyGptChatClient.
+            // Worst case scenario, it'll be just harmlessly redundant.
+            // return await ResponseStreamReader.ReadToEndAsync ();
+
             if (ResponseStreamReader.EndOfStream)
                 return await Task.FromResult <string?> (null);
 
             return await ResponseStreamReader.ReadToEndAsync (cancellationToken ?? CancellationToken.None);
-        }
-
-        public async ValueTask <string?> ReadLineAsync (CancellationToken? cancellationToken = null)
-        {
-            if (ResponseStreamReader == null)
-                throw new yyObjectDisposedException ($"'{nameof (ResponseStreamReader)}' is disposed.");
-
-            if (ResponseStreamReader.EndOfStream)
-                return await ValueTask.FromResult <string?> (null);
-
-            return await ResponseStreamReader.ReadLineAsync (cancellationToken ?? CancellationToken.None);
         }
 
         public void Dispose ()

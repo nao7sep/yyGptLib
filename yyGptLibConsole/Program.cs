@@ -10,8 +10,9 @@ namespace yyGptLibConsole
         {
             try
             {
-                Tester1.Test ();
-                Tester2.Test ();
+                // Tester1.Test ();
+                // Tester2.Test ();
+                Tester3.Test ();
             }
 
             catch (Exception xException)
