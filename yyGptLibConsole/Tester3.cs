@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Drawing;
+using System.Drawing.Imaging;
+using System.Text.Json;
 using yyGptLib;
 using yyLib;
 
@@ -6,11 +8,11 @@ namespace yyGptLibConsole
 {
     public static class Tester3
     {
-        public static void Test ()
+        public static void Test (int imageCount) // For the user to think how many she/he needs and how much she/he is willing to pay.
         {
             var xConnectionInfo = new yyGptImagesConnectionInfoModel { ApiKey = yyUserSecretsModel.Default.OpenAi!.ApiKey! };
 
-            for (int temp = 0; temp < 10; temp ++) // If the AI is faster than usual, the rate limit might be reached.
+            for (int temp = 0; temp < imageCount; temp ++) // If the AI is faster than usual, the rate limit might be reached.
             {
                 var xRequest = new yyGptImagesRequestModel
                 {
@@ -71,6 +73,13 @@ namespace yyGptLibConsole
 
                             File.WriteAllText (xFilePathWithoutExtension + ".txt", xResponse1.Data [0].RevisedPrompt);
                             File.WriteAllBytes (xFilePathWithoutExtension + ".png", xBytes); // There seems to be no official document on the format of the image, though.
+
+                            // For content distribution, JPEG is more convenient.
+
+#pragma warning disable CA1416 // Validate platform compatibility
+                            using Image xImage = Image.FromFile (xFilePathWithoutExtension + ".png");
+                            xImage.Save (xFilePathWithoutExtension + ".jpg", ImageFormat.Jpeg); // Default quality.
+#pragma warning restore CA1416
 
                             Console.WriteLine ("Generated image: " + xFilePathWithoutExtension + ".png");
                         }

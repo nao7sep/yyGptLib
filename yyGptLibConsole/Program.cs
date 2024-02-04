@@ -12,7 +12,7 @@ namespace yyGptLibConsole
             {
                 // Tester1.Test ();
                 // Tester2.Test ();
-                Tester3.Test ();
+                Tester3.Test (100); // Do not run this test casually as it might cost a lot of money.
             }
 
             catch (Exception xException)
