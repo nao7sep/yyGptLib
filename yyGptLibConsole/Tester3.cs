@@ -9,15 +9,20 @@ namespace yyGptLibConsole
 {
     public static class Tester3
     {
-        public static void Test (int imageCount) // For the user to think how many she/he needs and how much she/he is willing to pay.
+        // For the user to think how many she/he needs and how much she/he is willing to pay.
+        public static void Test (int imageCount)
         {
             var xConnectionInfo = new yyGptImagesConnectionInfoModel { ApiKey = yyUserSecretsModel.Default.OpenAi!.ApiKey! };
 
-            for (int temp = 0; temp < imageCount; temp ++) // If the AI is faster than usual, the rate limit might be reached.
+            // If the AI is faster than usual, the rate limits might be reached.
+            for (int temp = 0; temp < imageCount; temp ++)
             {
                 var xRequest = new yyGptImagesRequestModel
                 {
-                    Prompt = $"A beautiful person in a beautiful place, please.", // Changed to a more general prompt to see the tendency of the results.
+                    // Changed to a more general prompt to see the tendency of the results.
+                    // I ended up creating multilingual pages in: https://github.com/nao7sep/Resources/tree/main/Static/Beautiful%20People%20and%20Places
+                    Prompt = $"A beautiful person in a beautiful place, please.",
+
                     Model = "dall-e-3",
                     Quality = "hd",
                     Size = "1792x1024"
@@ -73,7 +78,9 @@ namespace yyGptLibConsole
                             yyDirectory.CreateParent (xFilePathWithoutExtension);
 
                             File.WriteAllText (xFilePathWithoutExtension + ".txt", xResponse1.Data [0].RevisedPrompt);
-                            File.WriteAllBytes (xFilePathWithoutExtension + ".png", xBytes); // There seems to be no official document on the format of the image, though.
+
+                            // There seems to be no official document on the format of the image, though.
+                            File.WriteAllBytes (xFilePathWithoutExtension + ".png", xBytes);
 
                             // For content distribution, JPEG is more convenient.
 
@@ -89,8 +96,11 @@ namespace yyGptLibConsole
                         {
                             // The following code displays 2 similar portions of text for testing purposes.
                             // The second one should display the string representation of the content of the error model that was successfully deserialized.
+                            // Like Tester1.cs, the redundancy is for testing purposes.
 
                             // If IsSuccessStatusCode is false, refer to the Error property.
+                            // It still may be null.
+                            // If so, consider referring to the original response string from the server, which must be logged in production code.
 
                             Console.WriteLine (xJson.GetVisibleString ());
 
@@ -180,6 +190,7 @@ namespace yyGptLibConsole
                             // Console.WriteLine (JsonSerializer.Serialize (xResponse, yyJson.DefaultSerializationOptions));
 
                             // No point in continuing.
+                            // The file must be failed to be created for the user to notice the problem.
                             return;
                         }
                     }
@@ -220,9 +231,11 @@ namespace yyGptLibConsole
                 {
                     string? xLastTranslatedImageTitle = null;
 
+                    int xTranslationCount = 0;
+
                     foreach (string xLine in yyStringLines.EnumerateLines (xInvariantLanguagePageFileContents))
                     {
-                        string Translate (string str)
+                        string Translate (string str, int waitingMilliseconds = 3000)
                         {
                             xRequest!.AddMessage (yyGptChatMessageRole.User, $"Please translate the following text into {languageName} and return only the translated text: {str}");
 
@@ -232,23 +245,37 @@ namespace yyGptLibConsole
                             string? xJson = xClient.ReadToEndAsync ().Result;
                             var xResponse = yyGptChatResponseParser.Parse (xJson);
 
-                            // I cant casually call EnsureSuccessStatusCode here.
-                            // If Parallel.ForEach goes too fast, the rate limit might be reached and we might receive a too-many-requests error.
-                            // We cant allow one failure to terminate the whole operation related to the language being translated into.
+                            // If I call EnsureSuccessStatusCode here, one exception thrown possibly by a too-many-requests error
+                            //     might result in the termination of the whole operation related to the language being translated into.
 
                             if (xSendingTask.Result.HttpResponseMessage.IsSuccessStatusCode == false)
                             {
-                                Thread.Sleep (3000); // Let's see...
+                                Thread.Sleep (waitingMilliseconds);
+
+                                // For my own information, when I first Parallel.ForEach-ed the translation operations, I quite often got the too-many-requests error.
+                                // But once I implemented the automatic retry mechanism, WITHOUT retrying, the program worked almost fine, leaving only the Chinese language file missing.
+                                // Then, I tried translating into Chinese only and it succeeded.
+                                // I honestly dont know why Chinese alone failed and dont want to try to reproduce the problem,
+                                //     costing myself a lot more money (as my wife is already not very happy knowing I have spent 42 US dollars today :$).
+                                // Let's imagine it's relevant to the language's complexity, like one irregular character was contained in one of the responses from the API.
+                                // I will fix the problem if it occurs again.
+
+                                // One more thing: My API usage was at 23.59 US dollars when I started the translation into 10 languages.
+                                // I succeeded with 9, failed with Chinese, retried Chinese only and succeeded.
+                                // Then, the usage was at 42.49 US dollars, indicating translating about 1,100 short titles and 1,100 medium-length prompts would cost us about 20 US dollars.
+                                // If these were 2,200 business-related messages that get things done and make a lot more than 20 US dollars, it would be a highly cost-effective tool.
 
                                 Console.BackgroundColor = ConsoleColor.Yellow;
                                 Console.ForegroundColor = ConsoleColor.Black;
                                 Console.WriteLine ("Retrying...");
                                 Console.ResetColor ();
 
-                                return Translate (str);
+                                // Adding 3 seconds each time.
+                                // In production code, this value (and the default value) must be configurable.
+                                return Translate (str, waitingMilliseconds += 3000);
                             }
 
-                            // During the initial tests, some titles got a period at the end.
+                            // During the initial tests, some titles got an unneeded period at the end.
                             string xTranslatedText = xResponse.Choices! [0].Message!.Content.GetVisibleString ().Trim ().Trim ('"').TrimEnd ('.');
 
                             xRequest.RemoveLastMessage ();
@@ -265,7 +292,8 @@ namespace yyGptLibConsole
                             xLastTranslatedImageTitle = Translate (xOriginalImageTitle);
                             xNewPageFileContents.AppendLine ($"## {xLastTranslatedImageTitle}");
 
-                            Console.WriteLine ($"Translated image title: {xOriginalImageTitle} => {xLastTranslatedImageTitle}");
+                            xTranslationCount ++;
+                            Console.WriteLine ($"Translated image title: {xTranslationCount}) {xOriginalImageTitle} => {xLastTranslatedImageTitle}");
                         }
 
                         else if (xLine.StartsWith ("!["))

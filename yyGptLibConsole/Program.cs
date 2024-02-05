@@ -43,12 +43,20 @@ namespace yyGptLibConsole
 
                 Parallel.ForEach (xLanguages, new ParallelOptions
                 {
-                    // 5 failed.
-                    // Only 2 languages out of 10 made it.
+                    // Let's leave some (redundant) information for my own information.
 
-                    // Now the implementation automatically retries the translation AND MaxDegreeOfParallelism is set to a lower number.
+                    // When I first tried this without parallel processing, it took me about 12 minutes (in February 2024) for each language.
+                    // After a few languages, I thought of using Parallel.ForEach, stopped the execution, implemented it and that's how it all began.
 
-                    MaxDegreeOfParallelism = 3
+                    // Maybe, I was still considered a new user by OpenAI and was not considered credible,
+                    //     but my rate limits were relatively easy to reach and I often got the too-many-requests error.
+                    // So, I set MaxDegreeOfParallelism to 5, hoping to finish the 10 languages in 2 iterations, and failed again.
+
+                    // In the end, I ended up implementing a capability to automatically retry when the error above occurred.
+                    // Now the code, upon failure, waits for 3 seconds, then 6 seconds, then 9 seconds and so on, adding 3 seconds each time.
+
+                    // As Tester3.cs is merely test code, it continues retrying until the stack overflows or my bank account is empty.
+                    // In production code, there must be a limit for the number of retries and also a cancellation mechanism.
                 },
                 x => Tester3.TranslatePage (xInvariantLanguagePageFilePath, x.Code, x.Name));
             }

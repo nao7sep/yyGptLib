@@ -58,7 +58,7 @@ namespace yyGptLibConsole
                         // https://platform.openai.com/docs/api-reference/moderations/object
                         // Maybe, the API's priority is to refuse to respond and apologize.
 
-                        // Tried again months later (in February 2022).
+                        // Tried again months later (in February 2024).
                         // I asked how to commit suicide, how to make a bomb, etc; anything I could think of.
                         // Again the AI returned normal responses with sense of apology.
 

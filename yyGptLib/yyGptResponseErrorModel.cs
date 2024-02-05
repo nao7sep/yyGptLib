@@ -5,7 +5,7 @@ namespace yyGptLib
     public class yyGptResponseErrorModel
     {
         // Chat and Images both seem to use this model.
-        // At this moment (meaning February 2022), I havent found any official document regarding this model (and ChatGPT couldnt find one either).
+        // At this moment (meaning February 2024), I havent found any official document regarding this model (and ChatGPT couldnt find one either).
         // So, the following code is based on this specific response that was returned when I intentionally violated the content policy for testing purposes.
 
         // {
