@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
+using System.Text;
 using System.Text.Json;
 using yyGptLib;
 using yyLib;
@@ -103,6 +104,79 @@ namespace yyGptLibConsole
                         Console.WriteLine (xException.ToString ());
                     }
                 }
+            }
+        }
+
+        public static void GeneratePage (string directoryPath, string summary)
+        {
+            try
+            {
+                string xPageTitle = Path.GetFileNameWithoutExtension (directoryPath);
+                var xFiles = Directory.EnumerateFiles (directoryPath).Order (StringComparer.OrdinalIgnoreCase).ToArray (); // Ordered and finalized.
+
+                string xPageFilePath = Path.Join (directoryPath, $"{xPageTitle}.md");
+
+                StringBuilder xPageFileContents = new ();
+                xPageFileContents.AppendLine ($"# {xPageTitle}");
+                xPageFileContents.AppendLine ();
+                xPageFileContents.AppendLine (summary);
+
+                // Loads the API key from the .yyUserSecrets file.
+                yyGptChatConnectionInfoModel xConnectionInfo = new ();
+
+                var xRequest = new yyGptChatRequestModel
+                {
+                    Model = "gpt-4"
+                };
+
+                xRequest.AddMessage (yyGptChatMessageRole.System, "You are a helpful assistant.");
+
+                using (yyGptChatClient xClient = new (xConnectionInfo))
+                {
+                    for (int temp = 0; temp < xFiles.Length; temp += 2)
+                    {
+                        string xImageFileName = Path.GetFileName (xFiles [temp]),
+                            xPrompt = File.ReadAllText (xFiles [temp + 1], Encoding.UTF8).Trim ();
+
+                        xRequest.AddMessage (yyGptChatMessageRole.User, $"Please generate a title without quotation marks or punctuation marks for an image generated with the following prompt: {xPrompt}");
+
+                        var xSendingTask = xClient.SendAsync (xRequest);
+                        xSendingTask.Wait ();
+
+                        string? xJson = xClient.ReadToEndAsync ().Result;
+                        var xResponse = yyGptChatResponseParser.Parse (xJson);
+
+                        if (xSendingTask.Result.HttpResponseMessage.IsSuccessStatusCode)
+                        {
+                            string xTitle = xResponse.Choices! [0].Message!.Content.GetVisibleString ().Trim ().Trim ('"'); // Just to make sure. Punctuation marks still do appear, but it's not a major problem.
+                            xRequest.RemoveLastMessage ();
+
+                            xPageFileContents.AppendLine ();
+                            xPageFileContents.AppendLine ($"## {xTitle}");
+                            xPageFileContents.AppendLine ();
+                            xPageFileContents.AppendLine (xPrompt);
+                            xPageFileContents.AppendLine ();
+                            xPageFileContents.AppendLine ($"![{xTitle}]({xImageFileName})");
+
+                            Console.WriteLine ($"Added to page: {temp / 2 + 1}) {xTitle}");
+                        }
+
+                        else
+                        {
+                            Console.WriteLine (xJson.GetVisibleString ());
+
+                            Console.WriteLine (JsonSerializer.Serialize (xResponse, yyJson.DefaultSerializationOptions));
+                        }
+                    }
+                }
+
+                File.WriteAllText (xPageFilePath, xPageFileContents.ToString (), Encoding.UTF8);
+            }
+
+            catch (Exception xException)
+            {
+                yySimpleLogger.Default.TryWriteException (xException);
+                Console.WriteLine (xException.ToString ());
             }
         }
     }
