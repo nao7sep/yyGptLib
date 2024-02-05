@@ -229,13 +229,24 @@ namespace yyGptLibConsole
                             var xSendingTask = xClient.SendAsync (xRequest);
                             xSendingTask.Wait ();
 
-                            // Just making sure.
-                            // If an error (such as the too-many-requests error) occurs,
-                            //     only the corresponding thread (within the parallel loop) ends through the catch block and the file will not be written.
-                            xSendingTask.Result.HttpResponseMessage.EnsureSuccessStatusCode ();
-
                             string? xJson = xClient.ReadToEndAsync ().Result;
                             var xResponse = yyGptChatResponseParser.Parse (xJson);
+
+                            // I cant casually call EnsureSuccessStatusCode here.
+                            // If Parallel.ForEach goes too fast, the rate limit might be reached and we might receive a too-many-requests error.
+                            // We cant allow one failure to terminate the whole operation related to the language being translated into.
+
+                            if (xSendingTask.Result.HttpResponseMessage.IsSuccessStatusCode == false)
+                            {
+                                Thread.Sleep (3000); // Let's see...
+
+                                Console.BackgroundColor = ConsoleColor.Yellow;
+                                Console.ForegroundColor = ConsoleColor.Black;
+                                Console.WriteLine ("Retrying...");
+                                Console.ResetColor ();
+
+                                return Translate (str);
+                            }
 
                             // During the initial tests, some titles got a period at the end.
                             string xTranslatedText = xResponse.Choices! [0].Message!.Content.GetVisibleString ().Trim ().Trim ('"').TrimEnd ('.');

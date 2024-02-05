@@ -41,13 +41,14 @@ namespace yyGptLibConsole
                     new { Code = "ko", Name = "Korean" }
                 };
 
-                // If we generate the pages one by one, it can take more than 10 minutes per page.
-                // But if we generate all of them simultaneously, we may receive a too-many-requests error.
-
                 Parallel.ForEach (xLanguages, new ParallelOptions
                 {
-                    // 10 languages in 2 iterations, hopefully.
-                    MaxDegreeOfParallelism = 5
+                    // 5 failed.
+                    // Only 2 languages out of 10 made it.
+
+                    // Now the implementation automatically retries the translation AND MaxDegreeOfParallelism is set to a lower number.
+
+                    MaxDegreeOfParallelism = 3
                 },
                 x => Tester3.TranslatePage (xInvariantLanguagePageFilePath, x.Code, x.Name));
             }
