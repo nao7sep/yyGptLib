@@ -188,5 +188,88 @@ namespace yyGptLibConsole
                 Console.WriteLine (xException.ToString ());
             }
         }
+
+        public static void TranslatePage (string invariantLanguagePageFilePath, string languageCode, string languageName)
+        {
+            try
+            {
+                string xInvariantLanguagePageTitle = Path.GetFileNameWithoutExtension (invariantLanguagePageFilePath),
+                    xInvariantLanguagePageFileContents = File.ReadAllText (invariantLanguagePageFilePath, Encoding.UTF8);
+
+                string xNewPageFilePath = Path.Join (Path.GetDirectoryName (invariantLanguagePageFilePath), $"{xInvariantLanguagePageTitle}.{languageCode}.md");
+
+                StringBuilder xNewPageFileContents = new ();
+
+                // Loads the API key from the .yyUserSecrets file.
+                yyGptChatConnectionInfoModel xConnectionInfo = new ();
+
+                var xRequest = new yyGptChatRequestModel
+                {
+                    Model = "gpt-4"
+                };
+
+                xRequest.AddMessage (yyGptChatMessageRole.System, "You are a helpful assistant.");
+                
+                using (yyGptChatClient xClient = new (xConnectionInfo))
+                {
+                    string? xLastTranslatedImageTitle = null;
+
+                    foreach (string xLine in yyStringLines.EnumerateLines (xInvariantLanguagePageFileContents))
+                    {
+                        string Translate (string str)
+                        {
+                            xRequest!.AddMessage (yyGptChatMessageRole.User, $"Please translate the following text into {languageName} and return only the translated text: {str}");
+
+                            var xSendingTask = xClient.SendAsync (xRequest);
+                            xSendingTask.Wait ();
+
+                            // Just making sure.
+                            xSendingTask.Result.HttpResponseMessage.EnsureSuccessStatusCode ();
+
+                            string? xJson = xClient.ReadToEndAsync ().Result;
+                            var xResponse = yyGptChatResponseParser.Parse (xJson);
+
+                            string xTranslatedText = xResponse.Choices! [0].Message!.Content.GetVisibleString ().Trim ().Trim ('"'); // Just to make sure.
+                            xRequest.RemoveLastMessage ();
+
+                            return xTranslatedText;
+                        }
+
+                        if (xLine.StartsWith ("# "))
+                            xNewPageFileContents.AppendLine ($"# {Translate (xLine.Substring (2))}");
+
+                        else if (xLine.StartsWith ("## "))
+                        {
+                            string xOriginalImageTitle = xLine.Substring (3);
+                            xLastTranslatedImageTitle = Translate (xOriginalImageTitle);
+                            xNewPageFileContents.AppendLine ($"## {xLastTranslatedImageTitle}");
+
+                            Console.WriteLine ($"Translated image title: {xOriginalImageTitle} => {xLastTranslatedImageTitle}");
+                        }
+
+                        else if (xLine.StartsWith ("!["))
+                            xNewPageFileContents.AppendLine ($"![{xLastTranslatedImageTitle}{xLine.AsSpan (xLine.IndexOf ("]("))}");
+
+                        else if (xLine.Length > 0)
+                        {
+                            if (xLine.StartsWith ("https://"))
+                                xNewPageFileContents.AppendLine (xLine);
+
+                            else xNewPageFileContents.AppendLine (Translate (xLine));
+                        }
+
+                        else xNewPageFileContents.AppendLine (xLine);
+                    }
+                }
+
+                File.WriteAllText (xNewPageFilePath, xNewPageFileContents.ToString (), Encoding.UTF8);
+            }
+
+            catch (Exception xException)
+            {
+                yySimpleLogger.Default.TryWriteException (xException);
+                Console.WriteLine (xException.ToString ());
+            }
+        }
     }
 }
