@@ -157,7 +157,10 @@ namespace yyGptLibConsole
 
                         if (xSendingTask.Result.HttpResponseMessage.IsSuccessStatusCode)
                         {
-                            string xTitle = xResponse.Choices! [0].Message!.Content.GetVisibleString ().Trim ().Trim ('"'); // Just to make sure. Punctuation marks still do appear, but it's not a major problem.
+                            // Just to make sure.
+                            // Punctuation marks still do appear, but it's not a major problem.
+                            string xTitle = xResponse.Choices! [0].Message!.Content.GetVisibleString ().Trim ().Trim ('"').TrimEnd ('.');
+
                             xRequest.RemoveLastMessage ();
 
                             xPageFileContents.AppendLine ();
@@ -209,7 +212,7 @@ namespace yyGptLibConsole
                 };
 
                 xRequest.AddMessage (yyGptChatMessageRole.System, "You are a helpful assistant.");
-                
+
                 using (yyGptChatClient xClient = new (xConnectionInfo))
                 {
                     string? xLastTranslatedImageTitle = null;
@@ -229,7 +232,9 @@ namespace yyGptLibConsole
                             string? xJson = xClient.ReadToEndAsync ().Result;
                             var xResponse = yyGptChatResponseParser.Parse (xJson);
 
-                            string xTranslatedText = xResponse.Choices! [0].Message!.Content.GetVisibleString ().Trim ().Trim ('"'); // Just to make sure.
+                            // During the initial tests, some titles got a period at the end.
+                            string xTranslatedText = xResponse.Choices! [0].Message!.Content.GetVisibleString ().Trim ().Trim ('"').TrimEnd ('.');
+
                             xRequest.RemoveLastMessage ();
 
                             return xTranslatedText;

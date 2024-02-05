@@ -41,8 +41,8 @@ namespace yyGptLibConsole
                     new { Code = "ko", Name = "Korean" }
                 };
 
-                foreach (var xLanguage in xLanguages)
-                    Tester3.TranslatePage (xInvariantLanguagePageFilePath, xLanguage.Code, xLanguage.Name);
+                // If we generate the pages one by one, it can take more than 10 minutes per page.
+                Parallel.ForEach (xLanguages, x => Tester3.TranslatePage (xInvariantLanguagePageFilePath, x.Code, x.Name));
             }
 
             catch (Exception xException)
