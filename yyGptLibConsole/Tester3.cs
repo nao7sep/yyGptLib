@@ -177,7 +177,10 @@ namespace yyGptLibConsole
                         {
                             Console.WriteLine (xJson.GetVisibleString ());
 
-                            Console.WriteLine (JsonSerializer.Serialize (xResponse, yyJson.DefaultSerializationOptions));
+                            // Console.WriteLine (JsonSerializer.Serialize (xResponse, yyJson.DefaultSerializationOptions));
+
+                            // No point in continuing.
+                            return;
                         }
                     }
                 }
@@ -227,6 +230,8 @@ namespace yyGptLibConsole
                             xSendingTask.Wait ();
 
                             // Just making sure.
+                            // If an error (such as the too-many-requests error) occurs,
+                            //     only the corresponding thread (within the parallel loop) ends through the catch block and the file will not be written.
                             xSendingTask.Result.HttpResponseMessage.EnsureSuccessStatusCode ();
 
                             string? xJson = xClient.ReadToEndAsync ().Result;
