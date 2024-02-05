@@ -112,7 +112,16 @@ namespace yyGptLibConsole
             try
             {
                 string xPageTitle = Path.GetFileNameWithoutExtension (directoryPath);
-                var xFiles = Directory.EnumerateFiles (directoryPath).Order (StringComparer.OrdinalIgnoreCase).ToArray (); // Ordered and finalized.
+
+                var xFiles = Directory.EnumerateFiles (directoryPath).Where (x =>
+                {
+                    // Making sure the .md file is not included to later cause an out-of-range exception.
+                    string xExtension = Path.GetExtension (x);
+
+                    return xExtension.Equals (".jpg", StringComparison.OrdinalIgnoreCase) ||
+                        xExtension.Equals (".txt", StringComparison.OrdinalIgnoreCase);
+                }).
+                Order (StringComparer.OrdinalIgnoreCase).ToArray (); // Ordered and finalized.
 
                 string xPageFilePath = Path.Join (directoryPath, $"{xPageTitle}.md");
 
