@@ -77,7 +77,7 @@ namespace yyGptLibConsole
 
                             yyDirectory.CreateParent (xFilePathWithoutExtension);
 
-                            File.WriteAllText (xFilePathWithoutExtension + ".txt", xResponse1.Data [0].RevisedPrompt);
+                            File.WriteAllText (xFilePathWithoutExtension + ".txt", xResponse1.Data [0].RevisedPrompt, Encoding.UTF8);
 
                             // There seems to be no official document on the format of the image, though.
                             File.WriteAllBytes (xFilePathWithoutExtension + ".png", xBytes);
