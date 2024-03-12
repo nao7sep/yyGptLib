@@ -16,14 +16,14 @@
 
         <Configuration></Configuration>
 
-        <Version>0.3</Version>
+        <Version>0.4</Version>
         <AssemblyVersion></AssemblyVersion>
         <FileVersion></FileVersion>
         <InformationalVersion></InformationalVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
+      <PackageReference Include="System.Drawing.Common" Version="8.0.2" />
     </ItemGroup>
 
     <ItemGroup>
