@@ -140,7 +140,7 @@ namespace yyGptLibConsole
                 xPageFileContents.AppendLine ();
                 xPageFileContents.AppendLine (summary);
 
-                // Loads the API key from the .yyUserSecrets file.
+                // Loads the API key from the .yyUserSecrets.json file.
                 yyGptChatConnectionInfoModel xConnectionInfo = new ();
 
                 var xRequest = new yyGptChatRequestModel
@@ -217,7 +217,7 @@ namespace yyGptLibConsole
 
                 StringBuilder xNewPageFileContents = new ();
 
-                // Loads the API key from the .yyUserSecrets file.
+                // Loads the API key from the .yyUserSecrets.json file.
                 yyGptChatConnectionInfoModel xConnectionInfo = new ();
 
                 var xRequest = new yyGptChatRequestModel
