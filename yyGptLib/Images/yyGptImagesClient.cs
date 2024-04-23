@@ -20,8 +20,15 @@ namespace yyGptLib
         public yyGptImagesClient (yyGptImagesConnectionInfoModel connectionInfo)
         {
             ConnectionInfo = connectionInfo;
+
             HttpClient = new HttpClient ();
             HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue ("Bearer", ConnectionInfo.ApiKey);
+
+            if (string.IsNullOrWhiteSpace (ConnectionInfo.Organization) == false)
+                HttpClient.DefaultRequestHeaders.Add ("OpenAI-Organization", ConnectionInfo.Organization);
+
+            if (string.IsNullOrWhiteSpace (ConnectionInfo.Project) == false)
+                HttpClient.DefaultRequestHeaders.Add ("OpenAI-Project", ConnectionInfo.Project);
         }
 
         public async Task <(HttpResponseMessage HttpResponseMessage, Stream Stream)> SendAsync (yyGptImagesRequestModel request,

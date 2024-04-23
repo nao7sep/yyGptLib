@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using yyLib;
@@ -20,8 +20,17 @@ namespace yyGptLib
         public yyGptChatClient (yyGptChatConnectionInfoModel connectionInfo)
         {
             ConnectionInfo = connectionInfo;
+
             HttpClient = new HttpClient ();
             HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue ("Bearer", ConnectionInfo.ApiKey);
+
+            // https://platform.openai.com/docs/api-reference/organizations-and-projects-optional
+
+            if (string.IsNullOrWhiteSpace (ConnectionInfo.Organization) == false)
+                HttpClient.DefaultRequestHeaders.Add ("OpenAI-Organization", ConnectionInfo.Organization);
+
+            if (string.IsNullOrWhiteSpace (ConnectionInfo.Project) == false)
+                HttpClient.DefaultRequestHeaders.Add ("OpenAI-Project", ConnectionInfo.Project);
         }
 
         public async Task <(HttpResponseMessage HttpResponseMessage, Stream Stream)> SendAsync (yyGptChatRequestModel request,

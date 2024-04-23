@@ -18,6 +18,9 @@ namespace yyGptLib
         [JsonPropertyName ("logit_bias")]
         public IDictionary <int, double>? LogitBias { get; set; }
 
+        [JsonPropertyName ("logprobs")]
+        public bool? LogProbs { get; set; }
+
         [JsonPropertyName ("max_tokens")]
         public int? MaxTokens { get; set; }
 
@@ -41,6 +44,9 @@ namespace yyGptLib
 
         [JsonPropertyName ("temperature")]
         public double? Temperature { get; set; }
+
+        [JsonPropertyName ("top_logprobs")]
+        public int? TopLogProbs { get; set; }
 
         [JsonPropertyName ("top_p")]
         public double? TopP { get; set; }

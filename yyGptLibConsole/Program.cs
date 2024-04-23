@@ -1,4 +1,4 @@
-﻿using yyLib;
+using yyLib;
 
 namespace yyGptLibConsole
 {
