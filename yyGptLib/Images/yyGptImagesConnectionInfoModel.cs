@@ -19,6 +19,8 @@ namespace yyGptLib
         public yyGptImagesConnectionInfoModel ()
         {
             ApiKey = yyGpt.DefaultApiKey;
+            Organization = yyGpt.DefaultOrganization;
+            Project = yyGpt.DefaultProject;
             Endpoint = yyGptImages.DefaultEndpoint;
         }
     }

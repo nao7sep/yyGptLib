@@ -19,6 +19,8 @@ namespace yyGptLib
         public yyGptChatConnectionInfoModel ()
         {
             ApiKey = yyGpt.DefaultApiKey;
+            Organization = yyGpt.DefaultOrganization;
+            Project = yyGpt.DefaultProject;
             Endpoint = yyGptChat.DefaultEndpoint;
         }
     }
