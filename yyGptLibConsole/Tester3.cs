@@ -12,7 +12,7 @@ namespace yyGptLibConsole
         // For the user to think how many she/he needs and how much she/he is willing to pay.
         public static void Test (int imageCount)
         {
-            var xConnectionInfo = new yyGptImagesConnectionInfoModel { ApiKey = yyUserSecretsModel.Default.OpenAi!.ApiKey! };
+            var xConnectionInfo = new yyGptImagesConnectionInfoModel { ApiKey = yyUserSecrets.Default.OpenAi!.ApiKey! };
 
             // If the AI is faster than usual, the rate limits might be reached.
             for (int temp = 0; temp < imageCount; temp ++)

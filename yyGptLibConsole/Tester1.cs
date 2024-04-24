@@ -9,7 +9,7 @@ namespace yyGptLibConsole
     {
         public static void Test ()
         {
-            var xConnectionInfo = new yyGptChatConnectionInfoModel { ApiKey = yyUserSecretsModel.Default.OpenAi!.ApiKey! };
+            var xConnectionInfo = new yyGptChatConnectionInfoModel { ApiKey = yyUserSecrets.Default.OpenAi!.ApiKey! };
 
             var xRequest = new yyGptChatRequestModel
             {

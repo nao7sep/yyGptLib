@@ -3,6 +3,5 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-// Use simple 'using' statement
 [assembly: SuppressMessage ("Style", "IDE0057")]
 [assembly: SuppressMessage ("Style", "IDE0063")]
