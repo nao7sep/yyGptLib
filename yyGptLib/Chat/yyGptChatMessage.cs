@@ -5,13 +5,7 @@ namespace yyGptLib
     public class yyGptChatMessage
     {
         [JsonPropertyName ("role")]
-        public string? RoleString
-        {
-            get => Role?.ToString ();
-            set => Role = yyGptChatMessageRole.Parse (value);
-        }
-
-        [JsonIgnore]
+        [JsonConverter (typeof (yyGptChatMessageRoleJsonConverter))]
         public yyGptChatMessageRole? Role { get; set; }
 
         [JsonPropertyName ("content")]
