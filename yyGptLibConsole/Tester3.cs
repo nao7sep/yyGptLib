@@ -12,12 +12,12 @@ namespace yyGptLibConsole
         // For the user to think how many she/he needs and how much she/he is willing to pay.
         public static void Test (int imageCount)
         {
-            var xConnectionInfo = new yyGptImagesConnectionInfoModel { ApiKey = yyUserSecrets.Default.OpenAi!.ApiKey! };
+            var xConnectionInfo = new yyGptImagesConnectionInfo { ApiKey = yyUserSecrets.Default.OpenAi!.ApiKey! };
 
             // If the AI is faster than usual, the rate limits might be reached.
             for (int temp = 0; temp < imageCount; temp ++)
             {
-                var xRequest = new yyGptImagesRequestModel
+                var xRequest = new yyGptImagesRequest
                 {
                     // Changed to a more general prompt to see the tendency of the results.
                     // I ended up creating multilingual pages in: https://github.com/nao7sep/Resources/tree/main/Static/Beautiful%20People%20and%20Places
@@ -141,9 +141,9 @@ namespace yyGptLibConsole
                 xPageFileContents.AppendLine (summary);
 
                 // Loads the API key from the .yyUserSecrets.json file.
-                yyGptChatConnectionInfoModel xConnectionInfo = new ();
+                yyGptChatConnectionInfo xConnectionInfo = new ();
 
-                var xRequest = new yyGptChatRequestModel
+                var xRequest = new yyGptChatRequest
                 {
                     Model = "gpt-4"
                 };
@@ -218,9 +218,9 @@ namespace yyGptLibConsole
                 StringBuilder xNewPageFileContents = new ();
 
                 // Loads the API key from the .yyUserSecrets.json file.
-                yyGptChatConnectionInfoModel xConnectionInfo = new ();
+                yyGptChatConnectionInfo xConnectionInfo = new ();
 
-                var xRequest = new yyGptChatRequestModel
+                var xRequest = new yyGptChatRequest
                 {
                     Model = "gpt-4"
                 };

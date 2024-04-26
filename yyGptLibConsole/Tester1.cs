@@ -9,9 +9,9 @@ namespace yyGptLibConsole
     {
         public static void Test ()
         {
-            var xConnectionInfo = new yyGptChatConnectionInfoModel { ApiKey = yyUserSecrets.Default.OpenAi!.ApiKey! };
+            var xConnectionInfo = new yyGptChatConnectionInfo { ApiKey = yyUserSecrets.Default.OpenAi!.ApiKey! };
 
-            var xRequest = new yyGptChatRequestModel
+            var xRequest = new yyGptChatRequest
             {
                 Model = "gpt-4",
                 N = 3
@@ -140,7 +140,7 @@ namespace yyGptLibConsole
 
                             var xResponse2 = yyGptChatResponseParser.ParseChunk (xLine);
 
-                            if (xResponse2 == yyGptChatResponseModel.Empty)
+                            if (xResponse2 == yyGptChatResponse.Empty)
                                 break; // "data: [DONE]" is detected.
 
                             string? xContent = xResponse2.Choices! [0].Delta!.Content;

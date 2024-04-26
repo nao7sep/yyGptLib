@@ -24,7 +24,7 @@ namespace yyGptLibConsole
                     }
                 });
 
-                using yyGptChatConversation xConversation = new (new yyGptChatConnectionInfoModel { ApiKey = yyUserSecrets.Default.OpenAi!.ApiKey });
+                using yyGptChatConversation xConversation = new (new yyGptChatConnectionInfo { ApiKey = yyUserSecrets.Default.OpenAi!.ApiKey });
 
                 xConversation.Request.Model = "gpt-4";
                 xConversation.Request.N = 3;

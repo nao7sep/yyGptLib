@@ -5,12 +5,12 @@ namespace yyGptLib
 {
     public static class yyGptChatResponseParser
     {
-        public static yyGptChatResponseModel Parse (string? str)
+        public static yyGptChatResponse Parse (string? str)
         {
             if (string.IsNullOrWhiteSpace (str))
                 throw new yyArgumentException ($"'{nameof (str)}' is invalid: {str.GetVisibleString ()}");
 
-            var xResponse = (yyGptChatResponseModel?) JsonSerializer.Deserialize (str, typeof (yyGptChatResponseModel), yyJson.DefaultDeserializationOptions);
+            var xResponse = (yyGptChatResponse?) JsonSerializer.Deserialize (str, typeof (yyGptChatResponse), yyJson.DefaultDeserializationOptions);
 
             if (xResponse == null)
                 throw new yyFormatException ($"Failed to deserialize JSON: {str.GetVisibleString ()}");
@@ -18,7 +18,7 @@ namespace yyGptLib
             return xResponse;
         }
 
-        public static yyGptChatResponseModel ParseChunk (string? str)
+        public static yyGptChatResponse ParseChunk (string? str)
         {
             if (string.IsNullOrWhiteSpace (str))
                 throw new yyArgumentException ($"'{nameof (str)}' is invalid: {str.GetVisibleString ()}");
@@ -27,8 +27,8 @@ namespace yyGptLib
             {
                 string xJson = str.Substring ("data: ".Length);
 
-                var xResponse = (yyGptChatResponseModel?) JsonSerializer.Deserialize (xJson,
-                    typeof (yyGptChatResponseModel), yyJson.DefaultDeserializationOptions);
+                var xResponse = (yyGptChatResponse?) JsonSerializer.Deserialize (xJson,
+                    typeof (yyGptChatResponse), yyJson.DefaultDeserializationOptions);
 
                 if (xResponse == null)
                     throw new yyFormatException ($"Failed to deserialize JSON: {xJson.GetVisibleString ()}");
@@ -37,7 +37,7 @@ namespace yyGptLib
             }
 
             if (str.Equals ("data: [DONE]", StringComparison.OrdinalIgnoreCase))
-                return yyGptChatResponseModel.Empty;
+                return yyGptChatResponse.Empty;
 
             throw new yyFormatException ($"Failed to parse chunk: {str.GetVisibleString ()}");
         }

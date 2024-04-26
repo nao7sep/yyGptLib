@@ -7,7 +7,7 @@ namespace yyGptLib
 {
     public class yyGptImagesClient: IDisposable
     {
-        public yyGptImagesConnectionInfoModel ConnectionInfo { get; private set; }
+        public yyGptImagesConnectionInfo ConnectionInfo { get; private set; }
 
         public HttpClient? HttpClient { get; private set; }
 
@@ -17,7 +17,7 @@ namespace yyGptLib
 
         public StreamReader? ResponseStreamReader { get; private set; }
 
-        public yyGptImagesClient (yyGptImagesConnectionInfoModel connectionInfo)
+        public yyGptImagesClient (yyGptImagesConnectionInfo connectionInfo)
         {
             ConnectionInfo = connectionInfo;
 
@@ -31,7 +31,7 @@ namespace yyGptLib
                 HttpClient.DefaultRequestHeaders.Add ("OpenAI-Project", ConnectionInfo.Project);
         }
 
-        public async Task <(HttpResponseMessage HttpResponseMessage, Stream Stream)> SendAsync (yyGptImagesRequestModel request,
+        public async Task <(HttpResponseMessage HttpResponseMessage, Stream Stream)> SendAsync (yyGptImagesRequest request,
             CancellationToken? cancellationTokenForSendAsync = null, CancellationToken? cancellationTokenForReadAsStreamAsync = null)
         {
             if (HttpClient == null)

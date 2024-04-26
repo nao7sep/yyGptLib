@@ -2,11 +2,11 @@
 
 namespace yyGptLib
 {
-    public class yyGptChatConversation (yyGptChatConnectionInfoModel connectionInfo): IDisposable
+    public class yyGptChatConversation (yyGptChatConnectionInfo connectionInfo): IDisposable
     {
         public yyGptChatClient Client { get; private set; } = new yyGptChatClient (connectionInfo);
 
-        public yyGptChatRequestModel Request { get; private set; } = new yyGptChatRequestModel ();
+        public yyGptChatRequest Request { get; private set; } = new yyGptChatRequest ();
 
         public async Task SendAsync (CancellationToken? cancellationTokenForSendAsync = null, CancellationToken? cancellationTokenForReadAsStreamAsync = null) =>
             await Client.SendAsync (Request, cancellationTokenForSendAsync, cancellationTokenForReadAsStreamAsync);
@@ -84,7 +84,7 @@ namespace yyGptLib
 
                     var xResponse = yyGptChatResponseParser.ParseChunk (xLine);
 
-                    if (xResponse == yyGptChatResponseModel.Empty)
+                    if (xResponse == yyGptChatResponse.Empty)
                         return (true, xLine, default, null, null); // "data: [DONE]" is detected.
 
                     int xIndex = xResponse.Choices! [0].Index!.Value;

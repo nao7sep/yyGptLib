@@ -7,7 +7,7 @@ namespace yyGptLib
 {
     public class yyGptChatClient: IDisposable
     {
-        public yyGptChatConnectionInfoModel ConnectionInfo { get; private set; }
+        public yyGptChatConnectionInfo ConnectionInfo { get; private set; }
 
         public HttpClient? HttpClient { get; private set; }
 
@@ -17,7 +17,7 @@ namespace yyGptLib
 
         public StreamReader? ResponseStreamReader { get; private set; }
 
-        public yyGptChatClient (yyGptChatConnectionInfoModel connectionInfo)
+        public yyGptChatClient (yyGptChatConnectionInfo connectionInfo)
         {
             ConnectionInfo = connectionInfo;
 
@@ -33,7 +33,7 @@ namespace yyGptLib
                 HttpClient.DefaultRequestHeaders.Add ("OpenAI-Project", ConnectionInfo.Project);
         }
 
-        public async Task <(HttpResponseMessage HttpResponseMessage, Stream Stream)> SendAsync (yyGptChatRequestModel request,
+        public async Task <(HttpResponseMessage HttpResponseMessage, Stream Stream)> SendAsync (yyGptChatRequest request,
             CancellationToken? cancellationTokenForSendAsync = null, CancellationToken? cancellationTokenForReadAsStreamAsync = null)
         {
             if (HttpClient == null)
