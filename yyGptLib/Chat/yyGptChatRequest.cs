@@ -8,7 +8,7 @@ namespace yyGptLib
         public string? Model { get; set; }
 
         [JsonPropertyName ("messages")]
-        public IList <yyGptChatMessageModel>? Messages { get; set; }
+        public IList <yyGptChatMessage>? Messages { get; set; }
 
         // Optional parameters are in alphabetical order.
 
@@ -58,9 +58,9 @@ namespace yyGptLib
 
         public void AddMessage (yyGptChatMessageRole role, string content, string? name = null)
         {
-            Messages ??= new List <yyGptChatMessageModel> ();
+            Messages ??= new List <yyGptChatMessage> ();
 
-            Messages.Add (new yyGptChatMessageModel
+            Messages.Add (new yyGptChatMessage
             {
                 Role = role,
                 Content = content,

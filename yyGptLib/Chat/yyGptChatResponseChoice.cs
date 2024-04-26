@@ -8,10 +8,10 @@ namespace yyGptLib
         public int? Index { get; set; }
 
         [JsonPropertyName ("message")]
-        public yyGptChatMessageModel? Message { get; set; }
+        public yyGptChatMessage? Message { get; set; }
 
         [JsonPropertyName ("delta")]
-        public yyGptChatMessageModel? Delta { get; set; }
+        public yyGptChatMessage? Delta { get; set; }
 
         [JsonPropertyName ("finish_reason")]
         public string? FinishReason { get; set; }

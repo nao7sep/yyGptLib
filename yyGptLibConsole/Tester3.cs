@@ -136,6 +136,7 @@ namespace yyGptLibConsole
                 string xPageFilePath = Path.Join (directoryPath, $"{xPageTitle}.md");
 
                 StringBuilder xPageFileContents = new ();
+
                 xPageFileContents.AppendLine ($"# {xPageTitle}");
                 xPageFileContents.AppendLine ();
                 xPageFileContents.AppendLine (summary);
@@ -143,10 +144,7 @@ namespace yyGptLibConsole
                 // Loads the API key from the .yyUserSecrets.json file.
                 yyGptChatConnectionInfo xConnectionInfo = new ();
 
-                var xRequest = new yyGptChatRequest
-                {
-                    Model = "gpt-4"
-                };
+                var xRequest = new yyGptChatRequest ();
 
                 xRequest.AddMessage (yyGptChatMessageRole.System, "You are a helpful assistant.");
 
@@ -220,10 +218,7 @@ namespace yyGptLibConsole
                 // Loads the API key from the .yyUserSecrets.json file.
                 yyGptChatConnectionInfo xConnectionInfo = new ();
 
-                var xRequest = new yyGptChatRequest
-                {
-                    Model = "gpt-4"
-                };
+                var xRequest = new yyGptChatRequest ();
 
                 xRequest.AddMessage (yyGptChatMessageRole.System, "You are a helpful assistant.");
 

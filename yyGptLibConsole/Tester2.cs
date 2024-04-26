@@ -26,12 +26,10 @@ namespace yyGptLibConsole
 
                 using yyGptChatConversation xConversation = new (new yyGptChatConnectionInfo { ApiKey = yyUserSecrets.Default.OpenAi!.ApiKey });
 
-                xConversation.Request.Model = "gpt-4";
                 xConversation.Request.N = 3;
-
                 xConversation.Request.AddMessage (yyGptChatMessageRole.System, "You are a helpful assistant.");
-
                 xConversation.Request.AddMessage (yyGptChatMessageRole.User, "A riddle that has multiple answers, please.");
+
                 Task xSendingTask = xConversation.SendAsync ();
 
                 // Various tasks...
@@ -86,6 +84,7 @@ namespace yyGptLibConsole
                         string? xPartialMessage = xChunkReadingTask.Result.PartialMessage;
 
                         xBuilders [xIndex].Append (xPartialMessage);
+
                         Console.WriteLine (FormattableString.Invariant ($"Read Chunk: [{xIndex}] {xPartialMessage.GetVisibleString ()}"));
                     }
 

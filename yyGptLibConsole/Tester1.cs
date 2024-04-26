@@ -13,7 +13,6 @@ namespace yyGptLibConsole
 
             var xRequest = new yyGptChatRequest
             {
-                Model = "gpt-4",
                 N = 3
             };
 
@@ -24,6 +23,7 @@ namespace yyGptLibConsole
                 try
                 {
                     xRequest.AddMessage (yyGptChatMessageRole.User, "A riddle that has multiple answers, please.");
+
                     var xSendingTask1 = xClient.SendAsync (xRequest);
 
                     // Various tasks...
@@ -78,6 +78,7 @@ namespace yyGptLibConsole
                 {
                     xRequest.Stream = true;
                     xRequest.AddMessage (yyGptChatMessageRole.User, "What is the answer?");
+
                     var xSendingTask2 = xClient.SendAsync (xRequest);
 
                     // Various tasks...
@@ -153,6 +154,7 @@ namespace yyGptLibConsole
                             int xIndex = xResponse2.Choices [0].Index!.Value;
 
                             xBuilders [xIndex].Append (xContent);
+
                             Console.WriteLine (FormattableString.Invariant ($"Read Chunk: [{xIndex}] {xContent.GetVisibleString ()}"));
                         }
 
