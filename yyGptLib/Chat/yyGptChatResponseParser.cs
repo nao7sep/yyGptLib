@@ -18,6 +18,9 @@ namespace yyGptLib
             return xResponse;
         }
 
+        /// <summary>
+        /// Returns yyGptChatResponse.Empty when "data: [DONE]" is detected.
+        /// </summary>
         public static yyGptChatResponse ParseChunk (string? str)
         {
             if (string.IsNullOrWhiteSpace (str))

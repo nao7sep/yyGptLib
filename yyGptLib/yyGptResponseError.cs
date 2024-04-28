@@ -17,6 +17,10 @@ namespace yyGptLib
         //   }
         // }
 
+        // The properties are sorted in the order of the example above.
+        // The order seems to vary (and some properties may be missing) depending on what has returned the error.
+        // If a new property is found/implemented, we'll add it here.
+
         [JsonPropertyName ("code")]
         public string? Code { get; set; }
 

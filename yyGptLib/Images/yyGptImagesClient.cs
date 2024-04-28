@@ -22,6 +22,10 @@ namespace yyGptLib
             ConnectionInfo = connectionInfo;
 
             HttpClient = new HttpClient ();
+
+            if (ConnectionInfo.Timeout != null)
+                HttpClient.Timeout = TimeSpan.FromSeconds (ConnectionInfo.Timeout.Value);
+
             HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue ("Bearer", ConnectionInfo.ApiKey);
 
             if (string.IsNullOrWhiteSpace (ConnectionInfo.Organization) == false)

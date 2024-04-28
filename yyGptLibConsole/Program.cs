@@ -21,7 +21,7 @@ namespace yyGptLibConsole
                     Environment.NewLine +
                     "https://github.com/nao7sep/yyGptLib/blob/main/yyGptLibConsole/Tester3.cs"); */
 
-                string xInvariantLanguagePageFilePath = @"C:\Repositories\Resources\Static\Beautiful People and Places\Beautiful People and Places.md";
+                /* string xInvariantLanguagePageFilePath = @"C:\Repositories\Resources\Static\Beautiful People and Places\Beautiful People and Places.md";
 
                 // ChatGPT seems confident in English, Spanish, French, German, Italian, Portuguese, Dutch, Russian, Chinese, Japanese, and Korean.
                 // It also says: However, my proficiency varies across languages, with the highest level of fluency in English.
@@ -58,7 +58,10 @@ namespace yyGptLibConsole
                     // As Tester3.cs is merely test code, it continues retrying until the stack overflows or my bank account is empty.
                     // In production code, there must be a limit for the number of retries and also a cancellation mechanism.
                 },
-                x => Tester3.TranslatePage (xInvariantLanguagePageFilePath, x.Code, x.Name));
+                x => Tester3.TranslatePage (xInvariantLanguagePageFilePath, x.Code, x.Name)); */
+
+                // Results are in: Resources/Misc/yyGptLibConsole_Tester4
+                Tester4.SaveJsonStrings ();
             }
 
             catch (Exception xException)

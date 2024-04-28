@@ -16,12 +16,16 @@ namespace yyGptLib
         [JsonPropertyName ("endpoint")]
         public string? Endpoint { get; set; }
 
+        [JsonPropertyName ("timeout")]
+        public int? Timeout { get; set; }
+
         public yyGptChatConnectionInfo ()
         {
             ApiKey = yyGpt.DefaultApiKey;
             Organization = yyGpt.DefaultOrganization;
             Project = yyGpt.DefaultProject;
             Endpoint = yyGptChat.DefaultEndpoint;
+            Timeout = yyGpt.DefaultTimeout;
         }
     }
 }

@@ -4,6 +4,10 @@ namespace yyGptLib
 {
     public class yyGptImagesRequest
     {
+        // https://platform.openai.com/docs/api-reference/images/create
+
+        // The properties are sorted in the order of the API reference.
+
         [JsonPropertyName ("prompt")]
         public string? Prompt { get; set; }
 

@@ -4,13 +4,16 @@ namespace yyGptLib
 {
     public class yyGptChatRequest
     {
-        [JsonPropertyName ("model")]
-        public string? Model { get; set; }
+        // Everything except function-related things.
+        // https://platform.openai.com/docs/api-reference/chat/create
+
+        // The properties are sorted in the order of the API reference.
 
         [JsonPropertyName ("messages")]
         public IList <yyGptChatMessage>? Messages { get; set; }
 
-        // Optional parameters are in alphabetical order.
+        [JsonPropertyName ("model")]
+        public string? Model { get; set; }
 
         [JsonPropertyName ("frequency_penalty")]
         public double? FrequencyPenalty { get; set; }
@@ -20,6 +23,9 @@ namespace yyGptLib
 
         [JsonPropertyName ("logprobs")]
         public bool? LogProbs { get; set; }
+
+        [JsonPropertyName ("top_logprobs")]
+        public int? TopLogProbs { get; set; }
 
         [JsonPropertyName ("max_tokens")]
         public int? MaxTokens { get; set; }
@@ -44,9 +50,6 @@ namespace yyGptLib
 
         [JsonPropertyName ("temperature")]
         public double? Temperature { get; set; }
-
-        [JsonPropertyName ("top_logprobs")]
-        public int? TopLogProbs { get; set; }
 
         [JsonPropertyName ("top_p")]
         public double? TopP { get; set; }
