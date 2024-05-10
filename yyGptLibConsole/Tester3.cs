@@ -73,7 +73,7 @@ namespace yyGptLibConsole
                             else xBytes = Convert.FromBase64String (xResponse1.Data! [0].B64Json!);
 
                             // Based on the time when the image becomes available locally.
-                            string xFilePathWithoutExtension = yyApplicationDirectory.MapPath ($"Images{Path.DirectorySeparatorChar}{yyFormatter.ToRoundtripFileNameString (DateTime.UtcNow)}");
+                            string xFilePathWithoutExtension = yyAppDirectory.MapPath ($"Images{Path.DirectorySeparatorChar}{yyFormatter.ToRoundtripFileNameString (DateTime.UtcNow)}");
 
                             yyDirectory.CreateParent (xFilePathWithoutExtension);
 
